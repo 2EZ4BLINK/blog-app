@@ -1,4 +1,4 @@
-import 'package:blog_forum/shared/styled_text.dart';
+import 'package:blog_forum/widgets/styled_text.dart';
 import 'package:flutter/material.dart';
 import 'package:blog_forum/theme.dart';
 
