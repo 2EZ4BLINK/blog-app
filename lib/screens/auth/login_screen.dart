@@ -17,9 +17,28 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  bool isEmailEmpty = false;
+  bool isPasswordEmpty = false;
+  bool isEmailInvalid = false;
+
   Future<void> _login() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
+
+    final emailRegex = RegExp(
+      r'^[^\s@]+@[^\s@]+\.[^\s@]+$',
+    );
+
+    setState(() {
+      isEmailEmpty = email.isEmpty;
+      isPasswordEmpty = password.isEmpty;
+      isEmailInvalid = email.isNotEmpty && !emailRegex.hasMatch(email);
+    });
+
+    final hasValidationError =
+        isEmailEmpty || isPasswordEmpty || isEmailInvalid;
+
+    if (hasValidationError) return;
 
     final authProvider = context.read<AuthProvider>();
 
@@ -31,11 +50,28 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
 
     if (isSuccess) {
-      // Navigate to home later
+      // Navigation will be handled using go_router.
     }
   }
 
-  void _clearError() {
+  void _clearEmailError() {
+    if (isEmailEmpty || isEmailInvalid) {
+      setState(() {
+        isEmailEmpty = false;
+        isEmailInvalid = false;
+      });
+    }
+
+    context.read<AuthProvider>().clearError();
+  }
+
+  void _clearPasswordError() {
+    if (isPasswordEmpty) {
+      setState(() {
+        isPasswordEmpty = false;
+      });
+    }
+
     context.read<AuthProvider>().clearError();
   }
 
@@ -43,6 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+
     super.dispose();
   }
 
@@ -61,47 +98,70 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             const StyledTitle("Login"),
 
-            // Email
             const SizedBox(height: 24),
+
             StyledTextField(
               controller: _emailController,
               label: "Email",
               keyboardType: TextInputType.emailAddress,
               onChanged: (_) {
-                _clearError();
+                _clearEmailError();
               },
             ),
 
-            // Password
+            if (isEmailEmpty) ...[
+              const SizedBox(height: 8),
+              const StyledTextError(
+                "Email should not be empty",
+              ),
+            ],
+
+            if (isEmailInvalid) ...[
+              const SizedBox(height: 8),
+              const StyledTextError(
+                "Please enter a valid email address",
+              ),
+            ],
+
             const SizedBox(height: 16),
+
             StyledTextField(
               controller: _passwordController,
               label: "Password",
               obscureText: true,
               onChanged: (_) {
-                _clearError();
+                _clearPasswordError();
               },
             ),
 
-            // Password Error Message
+            if (isPasswordEmpty) ...[
+              const SizedBox(height: 8),
+              const StyledTextError(
+                "Password should not be empty",
+              ),
+            ],
+
             if (authProvider.errorMessage != null) ...[
               const SizedBox(height: 8),
-              StyledText(authProvider.errorMessage!),
+              StyledTextError(
+                authProvider.errorMessage!,
+              ),
             ],
-            const SizedBox(height: 16),
 
-            // Forgot Password
             const SizedBox(height: 8),
+
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: () {},
-                child: const StyledText("Forgot Password?"),
+                child: const StyledText(
+                  "Forgot Password?",
+                ),
               ),
             ),
 
-            // Login Button
             const SizedBox(height: 24),
+
             StyledButton(
               onPressed: authProvider.isLoading ? null : _login,
               child: Row(
@@ -109,7 +169,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   const Icon(Icons.login),
                   const SizedBox(width: 8),
-                  StyledText(authProvider.isLoading ? "Logging In..." : "Login"),
+                  StyledText(
+                    authProvider.isLoading
+                        ? "Logging In..."
+                        : "Login",
+                  ),
                 ],
               ),
             ),
