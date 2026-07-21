@@ -6,13 +6,15 @@ class StyledTextField extends StatefulWidget {
   final String label;
   final bool obscureText;
   final TextInputType keyboardType;
+  final ValueChanged<String>? onChanged;
 
   const StyledTextField({
     super.key,
     required this.controller,
     required this.label,
     this.obscureText = false,
-    this.keyboardType = TextInputType.text
+    this.keyboardType = TextInputType.text,
+    this.onChanged,
   });
 
   @override
@@ -31,9 +33,10 @@ class _StyledTextFieldState extends State<StyledTextField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: widget.controller,
-      keyboardType: widget.keyboardType,
-      obscureText: _isObscured,
+        controller: widget.controller,
+        keyboardType: widget.keyboardType,
+        onChanged: widget.onChanged,
+        obscureText: _isObscured,
         decoration: InputDecoration(
           labelStyle: GoogleFonts.robotoMono(
               textStyle: Theme.of(context).textTheme.bodyMedium
