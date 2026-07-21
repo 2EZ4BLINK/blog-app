@@ -1,7 +1,7 @@
+import 'package:blog_forum/shared/styled_button.dart';
 import 'package:blog_forum/shared/styled_text.dart';
+import 'package:blog_forum/shared/styled_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:blog_forum/providers/auth_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,106 +11,68 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-
     super.dispose();
-  }
-
-  Future<void> _handleSignIn() async {
-    final email = _emailController.text.trim();
-    final password = _passwordController.text;
-
-    if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter your email and password.'),
-        ),
-      );
-
-      return;
-    }
-
-    final authProvider = context.read<AuthProvider>();
-
-    final success = await authProvider.signIn(
-      email: email,
-      password: password,
-    );
-
-    if (!mounted) return;
-
-    if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Login successful.'),
-        ),
-      );
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
-
     return Scaffold(
       appBar: AppBar(
-        title: const StyledTitle('Login'),
+        title: const StyledTitle("Blog App"),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            children: [
-              TextField(
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
-                ),
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const StyledTitle("Login"),
+
+            // Email
+            const SizedBox(height: 24),
+            StyledTextField(
+              controller: _emailController,
+              label: "Email",
+              keyboardType: TextInputType.emailAddress,
+            ),
+
+            // Password
+            const SizedBox(height: 16),
+            StyledTextField(
+              controller: _passwordController,
+              label: "Password",
+              obscureText: true,
+            ),
+
+            // Forgot Password
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () {},
+                child: const StyledText("Forgot Password?"),
               ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(),
-                ),
+            ),
+
+            const SizedBox(height: 24),
+            StyledButton(
+              onPressed: () {},
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.login),
+                  SizedBox(width: 8),
+                  Text("Login"),
+                ],
               ),
-              const SizedBox(height: 16),
-              if (authProvider.errorMessage != null)
-                Text(
-                  authProvider.errorMessage!,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.error,
-                  ),
-                ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed:
-                  authProvider.isLoading ? null : _handleSignIn,
-                  child: authProvider.isLoading
-                      ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                    ),
-                  )
-                      : const Text('Login'),
-                ),
-              ),
-            ],
-          ),
+            )
+          ],
         ),
       ),
     );
