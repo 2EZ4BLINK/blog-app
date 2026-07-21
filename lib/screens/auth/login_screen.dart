@@ -1,7 +1,9 @@
+import 'package:blog_forum/providers/auth_provider.dart';
 import 'package:blog_forum/shared/styled_button.dart';
 import 'package:blog_forum/shared/styled_text.dart';
 import 'package:blog_forum/shared/styled_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -21,8 +23,28 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  Future<void> _login() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    final authProvider = context.read<AuthProvider>();
+
+    final isSuccess = await authProvider.signIn(
+      email: email,
+      password: password,
+    );
+
+    if (!mounted) return;
+
+    if (isSuccess) {
+      // Navigate to home later
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
+
     return Scaffold(
       appBar: AppBar(
         title: const StyledTitle("Blog App"),
@@ -62,16 +84,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
             const SizedBox(height: 24),
             StyledButton(
-              onPressed: () {},
-              child: const Row(
+              onPressed: authProvider.isLoading ? null : _login,
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.login),
-                  SizedBox(width: 8),
-                  Text("Login"),
+                  const Icon(Icons.login),
+                  const SizedBox(width: 8),
+                  StyledText(authProvider.isLoading ? "Logging In..." : "Login"),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

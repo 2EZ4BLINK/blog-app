@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class StyledTextField extends StatefulWidget {
   final TextEditingController controller;
@@ -34,6 +35,9 @@ class _StyledTextFieldState extends State<StyledTextField> {
       keyboardType: widget.keyboardType,
       obscureText: _isObscured,
         decoration: InputDecoration(
+          labelStyle: GoogleFonts.robotoMono(
+              textStyle: Theme.of(context).textTheme.bodyMedium
+          ),
           labelText: widget.label,
           suffixIcon: widget.obscureText ? IconButton(
               onPressed: () {
