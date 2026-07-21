@@ -25,6 +25,11 @@ ThemeData defaultTheme = ThemeData(
 
   // Text Theme
   textTheme: TextTheme(
+    bodySmall: TextStyle(
+      color: AppColors.textColor,
+      fontSize: 14,
+      letterSpacing: 1,
+    ),
     bodyMedium: TextStyle(
       color: AppColors.textColor,
       fontSize: 16,
@@ -58,8 +63,8 @@ ThemeData defaultTheme = ThemeData(
     filled: true,
     fillColor:AppColors.secondaryColor.withValues(alpha: 0.5),
     border: InputBorder.none,
-    labelStyle: TextStyle(color: AppColors.textColor),
-    prefixIconColor: AppColors.textColor,
+    labelStyle: TextStyle(color: Colors.yellow),
+
   ),
 
   // Dialog Theme

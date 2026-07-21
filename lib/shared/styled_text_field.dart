@@ -1,3 +1,4 @@
+import 'package:blog_forum/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -33,6 +34,10 @@ class _StyledTextFieldState extends State<StyledTextField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+        style: GoogleFonts.robotoMono(
+          textStyle: Theme.of(context).textTheme.bodySmall
+        ),
+        cursorColor: AppColors.textColor,
         controller: widget.controller,
         keyboardType: widget.keyboardType,
         onChanged: widget.onChanged,
