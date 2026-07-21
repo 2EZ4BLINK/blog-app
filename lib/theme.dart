@@ -12,15 +12,10 @@ class AppColors {
 }
 
 ThemeData defaultTheme = ThemeData(
-  // seed color theme
-  colorScheme: ColorScheme.fromSeed(
-    seedColor: AppColors.primaryColor,
-  ),
-
-  // scaffold color
+  // Scaffold Color
   scaffoldBackgroundColor: AppColors.secondaryAccent,
 
-  // app bar theme colors
+  // App Bar Theme
   appBarTheme: AppBarTheme(
     backgroundColor: AppColors.secondaryColor,
     foregroundColor: AppColors.textColor,
@@ -28,7 +23,7 @@ ThemeData defaultTheme = ThemeData(
     centerTitle: true,
   ),
 
-  // text theme
+  // Text Theme
   textTheme: TextTheme(
     bodyMedium: TextStyle(
       color: AppColors.textColor,
@@ -49,6 +44,7 @@ ThemeData defaultTheme = ThemeData(
     ),
   ),
 
+  // Card Theme
   cardTheme: CardThemeData(
     color: AppColors.secondaryColor.withValues(alpha: 0.5),
     surfaceTintColor: Colors.transparent,
@@ -57,6 +53,7 @@ ThemeData defaultTheme = ThemeData(
     margin: const EdgeInsets.only(bottom: 16),
   ),
 
+  // Input Theme
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
     fillColor:AppColors.secondaryColor.withValues(alpha: 0.5),
@@ -65,6 +62,7 @@ ThemeData defaultTheme = ThemeData(
     prefixIconColor: AppColors.textColor,
   ),
 
+  // Dialog Theme
   dialogTheme: DialogThemeData(
     backgroundColor: AppColors.secondaryAccent,
     surfaceTintColor: AppColors.secondaryAccent,
