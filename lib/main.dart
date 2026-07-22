@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:blog_forum/providers/auth_provider.dart';
 
+final authProvider = AuthProvider();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -14,8 +16,9 @@ Future<void> main() async {
     publishableKey: 'sb_publishable_tN6GUeWgpEiDLAZEF4CC9A_LQh_WeH0',
   );
 
-  runApp(ChangeNotifierProvider(
-      create: (_) => AuthProvider(),
+
+  runApp(ChangeNotifierProvider.value(
+      value: authProvider,
       child: const MyApp()
     )
   );
@@ -28,7 +31,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: router,
+      routerConfig: createRouter(authProvider),
       theme: defaultTheme,
       debugShowCheckedModeBanner: false,
     );
