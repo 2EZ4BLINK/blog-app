@@ -1,12 +1,10 @@
+import 'package:blog_forum/providers/auth_provider.dart';
 import 'package:blog_forum/routes/app_router.dart';
-import 'package:blog_forum/screens/auth/login_screen.dart';
-import 'package:flutter/material.dart';
 import 'package:blog_forum/theme.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:blog_forum/providers/auth_provider.dart';
-
-final authProvider = AuthProvider();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,22 +14,29 @@ Future<void> main() async {
     publishableKey: 'sb_publishable_tN6GUeWgpEiDLAZEF4CC9A_LQh_WeH0',
   );
 
+  final authProvider = AuthProvider();
+  final router = createRouter(authProvider);
 
-  runApp(ChangeNotifierProvider.value(
+  runApp(
+    ChangeNotifierProvider.value(
       value: authProvider,
-      child: const MyApp()
-    )
+      child: MyApp(router: router),
+    ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({
+    required this.router,
+    super.key,
+  });
 
-  // This widget is the root of your application.
+  final GoRouter router;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: createRouter(authProvider),
+      routerConfig: router,
       theme: defaultTheme,
       debugShowCheckedModeBanner: false,
     );
