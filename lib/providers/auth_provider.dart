@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:blog_forum/services/auth_service.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../services/auth_service.dart';
 
 class AuthProvider extends ChangeNotifier {
-  final AuthService _authService = AuthService();
+  final AuthService _authService;
 
   bool _isLoading = false;
   String? _errorMessage;
+  bool _isLoggedIn = false;
+
+  AuthProvider({AuthService? authService})
+      : _authService = authService ?? AuthService();
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
+  bool get isLoggedIn => _isLoggedIn;
 
   Future<bool> signIn({
     required String email,
@@ -20,17 +25,16 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _authService.signIn(
+      final response = await _authService.signIn(
         email: email,
         password: password,
       );
 
-      return true;
-    } on AuthException catch (error) {
-      _errorMessage = error.message;
-      return false;
-    } catch (_) {
-      _errorMessage = 'Something went wrong. Please try again.';
+      _isLoggedIn = response.user != null;
+
+      return _isLoggedIn;
+    } catch (error) {
+      _errorMessage = error.toString();
       return false;
     } finally {
       _isLoading = false;
@@ -39,8 +43,6 @@ class AuthProvider extends ChangeNotifier {
   }
 
   void clearError() {
-    if (_errorMessage == null) return;
-
     _errorMessage = null;
     notifyListeners();
   }

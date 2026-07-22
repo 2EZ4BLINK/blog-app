@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:blog_forum/shared/styled_text.dart';
@@ -50,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
 
     if (isSuccess) {
-      // Navigation will be handled using go_router.
+      context.go('/');
     }
   }
 

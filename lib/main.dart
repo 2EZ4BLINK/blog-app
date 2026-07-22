@@ -1,3 +1,4 @@
+import 'package:blog_forum/routes/app_router.dart';
 import 'package:blog_forum/screens/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:blog_forum/theme.dart';
@@ -26,19 +27,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
-      // home: Scaffold(
-      //   appBar: AppBar(
-      //     title: StyledTitle("Blog App"),
-      //     centerTitle: true,
-      //   ),
-      //   body: Center(
-      //     child: StyledText('Blog Forum'),
-      //   ),
-      // ),
+    return MaterialApp.router(
+      routerConfig: router,
       theme: defaultTheme,
+      debugShowCheckedModeBanner: false,
     );
   }
 }
