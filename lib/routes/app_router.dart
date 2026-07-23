@@ -41,6 +41,10 @@ GoRouter createRouter(AuthProvider authProvider) {
         return '/login';
       }
 
+      if (isLoggedIn && currentRoute == '/login') {
+        return '/';
+      }
+
       return null;
     },
   );
