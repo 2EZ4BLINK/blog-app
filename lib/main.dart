@@ -1,4 +1,5 @@
 import 'package:blog_forum/providers/auth_provider.dart';
+import 'package:blog_forum/providers/post_provider.dart';
 import 'package:blog_forum/routes/app_router.dart';
 import 'package:blog_forum/theme.dart';
 import 'package:flutter/material.dart';
@@ -15,11 +16,19 @@ Future<void> main() async {
   );
 
   final authProvider = AuthProvider();
+  final postProvider = PostProvider();
   final router = createRouter(authProvider);
 
   runApp(
-    ChangeNotifierProvider.value(
-      value: authProvider,
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(
+          value: authProvider,
+        ),
+        ChangeNotifierProvider.value(
+          value: postProvider,
+        ),
+      ],
       child: MyApp(router: router),
     ),
   );

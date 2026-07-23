@@ -2,11 +2,11 @@ import 'package:blog_forum/config/supabase_config.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthService {
-  Future<AuthResponse> signUp({
+  Future<void> signUp({
     required String email,
     required String password,
-  }) {
-    return supabase.auth.signUp(
+  }) async {
+    await supabase.auth.signUp(
       email: email,
       password: password,
     );

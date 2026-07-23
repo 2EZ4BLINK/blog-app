@@ -1,5 +1,6 @@
 import 'package:blog_forum/providers/auth_provider.dart';
 import 'package:blog_forum/screens/auth/login_screen.dart';
+import 'package:blog_forum/screens/auth/signup_screen.dart';
 import 'package:blog_forum/screens/home/home_screen.dart';
 import 'package:blog_forum/screens/profile/profile_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +8,7 @@ import 'package:go_router/go_router.dart';
 const Set<String> publicRoutes = {
   '/',
   '/login',
+  '/signup',
 };
 
 GoRouter createRouter(AuthProvider authProvider) {
@@ -24,6 +26,12 @@ GoRouter createRouter(AuthProvider authProvider) {
         builder: (context, state) {
           return const LoginScreen();
         },
+      ),
+      GoRoute(
+        path: '/signup',
+        builder: (context, state){
+          return const SignupScreen();
+        }
       ),
       GoRoute(
         path: '/profile',

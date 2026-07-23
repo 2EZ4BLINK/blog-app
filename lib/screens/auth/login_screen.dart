@@ -152,11 +152,23 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 8),
 
             Align(
-              alignment: Alignment.centerRight,
+              alignment: Alignment.center,
               child: TextButton(
                 onPressed: () {},
                 child: const StyledText(
                   "Forgot Password?",
+                ),
+              ),
+            ),
+
+            Align(
+              alignment: Alignment.center,
+              child: TextButton(
+                onPressed: () {
+                  context.go('/signup');
+                },
+                child: const StyledText(
+                  "Create an account",
                 ),
               ),
             ),
