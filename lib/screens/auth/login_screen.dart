@@ -145,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
             if (authProvider.errorMessage != null) ...[
               const SizedBox(height: 8),
               StyledTextError(
-                authProvider.errorMessage!,
+                'Invalid login credentials',
               ),
             ],
 

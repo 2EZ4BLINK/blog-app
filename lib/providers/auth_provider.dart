@@ -40,6 +40,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<bool> signUp({
+    required String name,
     required String email,
     required String password,
   }) async {
@@ -49,12 +50,14 @@ class AuthProvider extends ChangeNotifier {
 
     try {
       await _authService.signUp(
+        name: name,
         email: email,
         password: password,
       );
 
       return true;
     } catch (error) {
+      print("error: $error");
       _errorMessage = error.toString();
       return false;
     } finally {

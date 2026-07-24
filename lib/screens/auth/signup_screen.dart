@@ -15,11 +15,13 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+  final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   void handleSignup() async {
     final success = await context.read<AuthProvider>().signUp(
+      name: nameController.text.trim(),
       email: emailController.text.trim(),
       password: passwordController.text.trim()
     );
@@ -33,6 +35,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   void dispose() {
+    nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
@@ -48,6 +51,11 @@ class _SignupScreenState extends State<SignupScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            StyledTextField(
+              controller: nameController,
+              label: 'Name',
+            ),
+            const SizedBox(height: 16),
             StyledTextField(
               controller: emailController,
               label: 'Email',
