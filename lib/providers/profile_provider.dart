@@ -27,4 +27,24 @@ class ProfileProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> updateProfile({
+    required String name,
+  }) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      await _profileService.updateProfile(
+        name: name,
+      );
+      await fetchCurrentProfile();
+    } catch (error) {
+      _errorMessage = error.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }

@@ -38,7 +38,13 @@ class _HomeScreenState extends State<HomeScreen> {
           child: const StyledTitle('Home'),
         ),
         actions: [
-          StyledText(user?.email ?? 'Guest'),
+          GestureDetector(
+            onTap: () {
+              if(user == null) return;
+              context.go('/profile');
+            },
+            child: StyledText(user?.email ?? 'Guest'),
+          ),
           if (user == null)
             TextButton(
               onPressed: () {

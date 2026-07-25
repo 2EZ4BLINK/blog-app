@@ -15,4 +15,15 @@ class ProfileService {
 
     return Profile.fromMap(data);
   }
+
+  Future<void> updateProfile({
+    required String name,
+  }) async {
+    final user = supabase.auth.currentUser!;
+
+    await supabase
+        .from('profiles')
+        .update({'name': name})
+        .eq('id', user.id);
+  }
 }
