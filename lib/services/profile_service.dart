@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:blog_forum/models/profiles.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfileService {
@@ -26,4 +29,35 @@ class ProfileService {
         .update({'name': name})
         .eq('id', user.id);
   }
+
+  Future<void> uploadAvatar() async {
+    final ImagePicker picker = ImagePicker();
+
+    final XFile? image = await picker.pickImage(
+      source: ImageSource.gallery,
+    );
+
+    if (image == null) return;
+
+    final File imageFile = File(image.path);
+
+    final user = supabase.auth.currentUser!;
+
+    final String filePath =
+        '${user.id}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+    await supabase.storage
+        .from('avatars')
+        .upload(filePath, imageFile);
+
+    final String avatarUrl = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+    await supabase
+        .from('profiles')
+        .update({'avatar_url': avatarUrl})
+        .eq('id', user.id);
+  }
+
 }

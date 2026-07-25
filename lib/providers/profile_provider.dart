@@ -47,4 +47,20 @@ class ProfileProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+Future<void> uploadAvatar() async {
+     _errorMessage = null;
+     notifyListeners();
+
+     try{
+       await _profileService.uploadAvatar();
+       await fetchCurrentProfile();
+     }
+     catch(error){
+       _errorMessage = error.toString();
+     }
+     finally{
+       notifyListeners();
+     }
+}
 }
