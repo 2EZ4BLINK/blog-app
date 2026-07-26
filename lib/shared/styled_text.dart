@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class StyledText extends StatelessWidget {
-  const StyledText(this.text, {super.key});
+  const StyledText(this.text,{super.key, this.color});
 
   final String text;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     return Text(text, style: GoogleFonts.robotoMono(
-        textStyle: Theme.of(context).textTheme.bodyMedium
+        textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: color),
     ));
   }
 }

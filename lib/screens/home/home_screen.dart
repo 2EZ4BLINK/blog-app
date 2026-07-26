@@ -86,8 +86,8 @@ class _HomeScreenState extends State<HomeScreen> {
           onPressed: () {
             context.push('/create-post');
             },
-          icon: const Icon(Icons.add),
-          label: const Text('Create Post'),
+          icon: Icon(Icons.add, color: AppColors.secondaryAccent),
+          label: StyledText('Create Post', color: AppColors.secondaryAccent),
       ),
     );
   }
