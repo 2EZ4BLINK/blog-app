@@ -79,6 +79,16 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+      floatingActionButton: user == null
+          ? null
+          : FloatingActionButton.extended(
+          backgroundColor: AppColors.titleColor,
+          onPressed: () {
+            context.push('/create-post');
+            },
+          icon: const Icon(Icons.add),
+          label: const Text('Create Post'),
+      ),
     );
   }
 }

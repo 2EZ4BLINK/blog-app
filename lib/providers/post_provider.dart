@@ -13,6 +13,26 @@ class PostProvider extends ChangeNotifier{
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
+  Future<void> createPost({
+    required String title,
+    required String content,
+  }) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try{
+      await _postService.createPost(title: title, content: content);
+    }
+    catch(error){
+      _errorMessage = error.toString();
+    }
+    finally{
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   Future<void> fetchPosts() async {
     _isLoading = true;
     _errorMessage = null;

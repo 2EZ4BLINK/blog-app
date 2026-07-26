@@ -2,6 +2,7 @@ import 'package:blog_forum/providers/auth_provider.dart';
 import 'package:blog_forum/screens/auth/login_screen.dart';
 import 'package:blog_forum/screens/auth/signup_screen.dart';
 import 'package:blog_forum/screens/home/home_screen.dart';
+import 'package:blog_forum/screens/posts/create_post_screen.dart';
 import 'package:blog_forum/screens/profile/profile_screen.dart';
 import 'package:go_router/go_router.dart';
 
@@ -37,6 +38,12 @@ GoRouter createRouter(AuthProvider authProvider) {
         path: '/profile',
         builder: (context, state) {
           return const ProfileScreen();
+        }
+      ),
+      GoRoute(
+        path: '/create-post',
+        builder: (context, state) {
+          return const CreatePostScreen();
         }
       )
     ],

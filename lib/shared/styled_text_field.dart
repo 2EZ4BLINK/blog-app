@@ -8,11 +8,13 @@ class StyledTextField extends StatefulWidget {
   final bool obscureText;
   final TextInputType keyboardType;
   final ValueChanged<String>? onChanged;
+  final int? maxLine;
 
   const StyledTextField({
     super.key,
     required this.controller,
     required this.label,
+    this.maxLine,
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
     this.onChanged,
@@ -37,6 +39,7 @@ class _StyledTextFieldState extends State<StyledTextField> {
         style: GoogleFonts.robotoMono(
           textStyle: Theme.of(context).textTheme.bodySmall
         ),
+        maxLines: widget.obscureText ? 1 : widget.maxLine,
         cursorColor: AppColors.textColor,
         controller: widget.controller,
         keyboardType: widget.keyboardType,

@@ -20,4 +20,14 @@ class Post {
         title = json['title'],
         content = json['content'];
 
+  factory Post.fromMap(Map<String, dynamic> map) {
+    return Post(
+      id: map['id'],
+      authorId: map['author_id'],
+      title: map['title'],
+      content: map['content'],
+      createdAt: DateTime.parse(map['created_at']),
+    );
+  }
+
 }
