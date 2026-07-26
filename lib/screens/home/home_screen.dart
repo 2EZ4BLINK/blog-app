@@ -28,8 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
         SnackBar(
           showCloseIcon: true,
           duration: Duration(seconds: 5),
-          content: StyledText('Failed deleting post', color: AppColors.titleColor),
-          backgroundColor: AppColors.primaryColor,
+          content: StyledText('Failed deleting post'),
         ),
       );
     } else {
@@ -37,9 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
         SnackBar(
           showCloseIcon: true,
           duration: Duration(seconds: 5),
-          content: StyledText('Post deleted', color: AppColors.titleColor),
-          backgroundColor: AppColors.successColor,
-
+          content: StyledText('Post deleted'),
         ),
       );
     }
@@ -120,7 +117,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              context.push('/edit-post', extra: post);
+                            },
                             icon: const Icon(Icons.edit),
                             color: AppColors.titleColor,
                           ),

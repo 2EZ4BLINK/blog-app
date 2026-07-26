@@ -19,14 +19,34 @@ class _SignupScreenState extends State<SignupScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  void handleSignup() async {
-    final success = await context.read<AuthProvider>().signUp(
+  void _handleSignup() async {
+    final authProvider = context.read<AuthProvider>();
+
+    final success = await authProvider.signUp(
       name: nameController.text.trim(),
       email: emailController.text.trim(),
       password: passwordController.text.trim()
     );
 
     if (!mounted) return;
+
+    if(authProvider.errorMessage != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          showCloseIcon: true,
+          duration: Duration(seconds: 5),
+          content: StyledText('Failed creating account'),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          showCloseIcon: true,
+          duration: Duration(seconds: 5),
+          content: StyledText('Account successfully created'),
+        ),
+      );
+    }
 
     if (success) {
       context.go('/login');
@@ -43,6 +63,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
+
     return Scaffold(
       appBar: AppBar(
         title: const StyledTitle('Sign Up'),
@@ -68,8 +90,10 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             const SizedBox(height: 24),
             StyledButton(
-              onPressed: handleSignup,
-              child: const StyledText('Create Account'),
+              onPressed: authProvider.isLoading ? null : _handleSignup,
+              child: authProvider.isLoading
+                  ? const StyledText('Creating...')
+                  : const StyledText('Create Account'),
             ),
           ],
         ),

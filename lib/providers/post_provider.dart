@@ -1,3 +1,4 @@
+import 'package:blog_forum/config/supabase_config.dart';
 import 'package:blog_forum/models/post.dart';
 import 'package:blog_forum/services/post_service.dart';
 import 'package:flutter/material.dart';
@@ -68,6 +69,30 @@ class PostProvider extends ChangeNotifier{
       _errorMessage = error.toString();
     }
     finally{
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> updatePost({
+    required String postId,
+    required String title,
+    required String content,
+  }) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      await _postService.updatePost(
+        postId: postId,
+        title: title,
+        content: content,
+      );
+      await fetchPosts();
+    } catch (error) {
+      _errorMessage = error.toString();
+    } finally {
       _isLoading = false;
       notifyListeners();
     }

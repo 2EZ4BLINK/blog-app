@@ -74,9 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: GestureDetector(
-              onTap: () {
-                context.go('/');
-              },
+              onTap: () {context.go('/');},
               child: const Center(
                 child: StyledHeading('Home'),
               ),

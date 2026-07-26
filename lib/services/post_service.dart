@@ -33,4 +33,18 @@ class PostService {
         .delete()
         .eq('id', postId);
   }
+
+  Future<void> updatePost({
+    required String postId,
+    required String title,
+    required String content,
+  }) async {
+    await supabase
+        .from('posts')
+        .update({
+          'title': title,
+          'content': content,
+        })
+        .eq('id', postId);
+  }
 }

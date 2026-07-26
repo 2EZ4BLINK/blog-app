@@ -1,3 +1,5 @@
+import 'package:blog_forum/models/post.dart';
+import 'package:blog_forum/providers/post_provider.dart';
 import 'package:blog_forum/shared/styled_text.dart';
 import 'package:blog_forum/shared/styled_text_field.dart';
 import 'package:blog_forum/theme.dart';
@@ -5,26 +7,27 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/post_provider.dart';
+class EditPostScreen extends StatefulWidget {
+  const EditPostScreen({
+    super.key,
+    required this.post,
+  });
 
-class CreatePostScreen extends StatefulWidget {
-  const CreatePostScreen({super.key});
+  final Post post;
 
   @override
-  State<CreatePostScreen> createState() => _CreatePostScreenState();
+  State<EditPostScreen> createState() => _EditPostScreenState();
 }
 
-class _CreatePostScreenState extends State<CreatePostScreen> {
-  final TextEditingController _titleController =
-  TextEditingController();
+class _EditPostScreenState extends State<EditPostScreen> {
+  late final TextEditingController _titleController;
+  late final TextEditingController _contentController;
 
-  final TextEditingController _contentController =
-  TextEditingController();
-
-  Future<void> _onHandleCreatePost() async {
+  Future<void> _onHandleUpdatePost() async {
     final postProvider = context.read<PostProvider>();
 
-    await postProvider.createPost(
+    await postProvider.updatePost(
+      postId: widget.post.id,
       title: _titleController.text.trim(),
       content: _contentController.text.trim(),
     );
@@ -33,10 +36,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
     if(postProvider.errorMessage != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(
+        SnackBar(
           showCloseIcon: true,
           duration: Duration(seconds: 5),
-          content: StyledText('Failed creating post'),
+          content: StyledText('Failed updating post'),
         ),
       );
     } else {
@@ -44,17 +47,27 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         SnackBar(
           showCloseIcon: true,
           duration: Duration(seconds: 5),
-          content: StyledText('Post created'),
+          content: StyledText('Post updated'),
         ),
       );
     }
 
     if (postProvider.errorMessage == null) {
-      _titleController.clear();
-      _contentController.clear();
-
       context.pop();
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _titleController = TextEditingController(
+      text: widget.post.title,
+    );
+
+    _contentController = TextEditingController(
+      text: widget.post.content,
+    );
   }
 
   @override
@@ -70,7 +83,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
     return Scaffold(
       appBar: AppBar(
-          title: const StyledTitle('Create Post'),
+        title: const StyledTitle('Edit Post'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -83,28 +96,25 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             const SizedBox(height: 16),
             StyledTextField(
               controller: _contentController,
-              maxLine: 5,
               label: 'Content',
+              maxLine: 5,
             ),
-            const SizedBox(height: 16),
-            if (postProvider.errorMessage != null)
-              Text(postProvider.errorMessage!),
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4)
-                  ),
                   backgroundColor: AppColors.secondaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
                 ),
                 onPressed: postProvider.isLoading
                     ? null
-                    : _onHandleCreatePost,
+                    : _onHandleUpdatePost,
                 child: postProvider.isLoading
-                    ? const StyledText('Creating Post...')
-                    : const StyledText('Create Post'),
+                    ? const StyledText('Updating Post...')
+                    : const StyledText('Update Post'),
               ),
             ),
           ],
