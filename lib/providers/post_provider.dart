@@ -23,6 +23,7 @@ class PostProvider extends ChangeNotifier{
 
     try{
       await _postService.createPost(title: title, content: content);
+      await fetchPosts();
     }
     catch(error){
       _errorMessage = error.toString();

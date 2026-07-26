@@ -116,13 +116,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
 
                     const SizedBox(height: 10),
-                    StyledTitle(
-                      '${profileProvider.profile!.name}',
-                    ),
+                    StyledTitle(profileProvider.profile!.name),
                     const SizedBox(height: 10),
-                    StyledText(
-                      '${user!.email}',
-                    ),
+                    StyledText('${user!.email}'),
 
                     const SizedBox(height: 100),
 

@@ -2,6 +2,7 @@ import 'package:blog_forum/shared/styled_text.dart';
 import 'package:blog_forum/shared/styled_text_field.dart';
 import 'package:blog_forum/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/post_provider.dart';
@@ -19,6 +20,25 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
   final TextEditingController _contentController =
   TextEditingController();
+
+  void _onHandleCreatePost() async {
+    final postProvider = context.read<PostProvider>();
+
+    await postProvider.createPost(
+      title: _titleController.text.trim(),
+      content: _contentController.text.trim(),
+    );
+
+    if (!context.mounted) return;
+
+
+    if (postProvider.errorMessage == null) {
+      _titleController.clear();
+      _contentController.clear();
+
+      context.pop();
+    }
+  }
 
   @override
   void dispose() {
@@ -64,14 +84,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 ),
                 onPressed: postProvider.isLoading
                     ? null
-                    : () async {
-                  await context.read<PostProvider>().createPost(
-                    title: _titleController.text.trim(),
-                    content: _contentController.text.trim(),
-                  );
-                },
+                    : _onHandleCreatePost,
                 child: postProvider.isLoading
-                    ? const CircularProgressIndicator()
+                    ? const StyledText('Creating Post...')
                     : const StyledText('Create Post'),
               ),
             ),
