@@ -21,7 +21,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   final TextEditingController _contentController =
   TextEditingController();
 
-  void _onHandleCreatePost() async {
+  Future<void> _onHandleCreatePost() async {
     final postProvider = context.read<PostProvider>();
 
     await postProvider.createPost(
@@ -30,6 +30,26 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     );
 
     if (!context.mounted) return;
+
+    if(postProvider.errorMessage != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(
+          showCloseIcon: true,
+          backgroundColor: AppColors.primaryColor,
+          duration: Duration(seconds: 5),
+          content: StyledText('Failed creating post', color: AppColors.titleColor),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          showCloseIcon: true,
+          duration: Duration(seconds: 5),
+          content: StyledText('Post created', color: AppColors.titleColor),
+          backgroundColor: AppColors.successColor,
+        ),
+      );
+    }
 
 
     if (postProvider.errorMessage == null) {

@@ -53,4 +53,23 @@ class PostProvider extends ChangeNotifier{
       notifyListeners();
     }
   }
+
+  Future<void> deletePost(postId) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try{
+      await _postService.deletePost(postId);
+      await fetchPosts();
+    }
+    catch(error)
+    {
+      _errorMessage = error.toString();
+    }
+    finally{
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }

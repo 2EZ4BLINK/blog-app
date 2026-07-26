@@ -15,6 +15,36 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  Future<void> _onHandleDeletePost(String postId) async {
+    final postProvider = context.read<PostProvider>();
+
+    if(!context.mounted) return;
+
+    await postProvider.deletePost(postId);
+
+    if(postProvider.errorMessage != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          showCloseIcon: true,
+          duration: Duration(seconds: 5),
+          content: StyledText('Failed deleting post', color: AppColors.titleColor),
+          backgroundColor: AppColors.primaryColor,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          showCloseIcon: true,
+          duration: Duration(seconds: 5),
+          content: StyledText('Post deleted', color: AppColors.titleColor),
+          backgroundColor: AppColors.successColor,
+
+        ),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -47,16 +77,13 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           if (user == null)
             TextButton(
-              onPressed: () {
-                context.go('/login');
-              },
+              onPressed: () {context.go('/login');},
               child: const StyledHeading('Login'),
             )
           else
             TextButton(
               onPressed: () async {
                 await context.read<AuthProvider>().signOut();
-
                 if (!context.mounted) return;
                 context.go('/');
               },
@@ -64,28 +91,58 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (postProvider.isLoading)
-              CircularProgressIndicator(
-                color: AppColors.textColor
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: postProvider.isLoading
+            ? Center(child: CircularProgressIndicator(color: AppColors.textColor))
+            : postProvider.errorMessage != null
+            ? Center(child: StyledText(postProvider.errorMessage!))
+            : postProvider.posts.isEmpty 
+            ? const Center(child: StyledText('Start creating a post.'))
+            : ListView.builder(
+          itemCount: postProvider.posts.length,
+          itemBuilder: (context, index) {
+            final post = postProvider.posts[index];
+            final isOwner = user?.id == post.authorId;
+
+            return Card(
+              child: Padding(
+                padding: const EdgeInsets.all(15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    StyledTitle(post.title),
+                    const SizedBox(height: 15),
+                    StyledText(post.content),
+                    const SizedBox(height: 10),
+                    if (isOwner)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            onPressed: () {},
+                            icon: const Icon(Icons.edit),
+                            color: AppColors.titleColor,
+                          ),
+                          IconButton(
+                            onPressed: () => _onHandleDeletePost(post.id),
+                            icon: const Icon(Icons.delete),
+                            color: AppColors.titleColor,
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
               )
-            else if (postProvider.errorMessage != null)
-              StyledText(postProvider.errorMessage!)
-            else
-              StyledText('Posts: ${postProvider.posts.length}'),
-          ],
+            );
+          },
         ),
       ),
       floatingActionButton: user == null
           ? null
           : FloatingActionButton.extended(
           backgroundColor: AppColors.titleColor,
-          onPressed: () {
-            context.push('/create-post');
-            },
+          onPressed: () {context.push('/create-post');},
           icon: Icon(Icons.add, color: AppColors.secondaryAccent),
           label: StyledText('Create Post', color: AppColors.secondaryAccent),
       ),

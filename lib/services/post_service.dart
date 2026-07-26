@@ -26,4 +26,11 @@ class PostService {
 
     return posts;
   }
+
+  Future<void> deletePost(postId) async {
+    await supabase
+        .from('posts')
+        .delete()
+        .eq('id', postId);
+  }
 }
