@@ -1,11 +1,13 @@
+import 'dart:io';
+
+import 'package:blog_forum/providers/post_provider.dart';
 import 'package:blog_forum/shared/styled_text.dart';
 import 'package:blog_forum/shared/styled_text_field.dart';
 import 'package:blog_forum/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-
-import '../../providers/post_provider.dart';
 
 class CreatePostScreen extends StatefulWidget {
   const CreatePostScreen({super.key});
@@ -21,6 +23,19 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   final TextEditingController _contentController =
   TextEditingController();
 
+  final ImagePicker _picker = ImagePicker();
+  List<File> _selectedImages = [];
+
+  Future<void> _pickImages() async {
+    final List<XFile> images = await _picker.pickMultiImage();
+
+    setState(() {
+      _selectedImages = images
+          .map((image) => File(image.path))
+          .toList();
+    });
+  }
+
   Future<void> _onHandleCreatePost() async {
     final postProvider = context.read<PostProvider>();
 
@@ -29,21 +44,21 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       content: _contentController.text.trim(),
     );
 
-    if (!context.mounted) return;
+    if (!mounted) return;
 
     if(postProvider.errorMessage != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(
+        const SnackBar(
           showCloseIcon: true,
-          duration: Duration(seconds: 5),
+          duration: Duration(seconds: 3),
           content: StyledText('Failed creating post'),
         ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           showCloseIcon: true,
-          duration: Duration(seconds: 5),
+          duration: Duration(seconds: 3),
           content: StyledText('Post created'),
         ),
       );
@@ -89,6 +104,31 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             const SizedBox(height: 16),
             if (postProvider.errorMessage != null)
               Text(postProvider.errorMessage!),
+            const SizedBox(height: 16),
+            OutlinedButton(
+              onPressed: _pickImages,
+              child: const StyledText('Select Images'),
+            ),
+            const SizedBox(height: 16),
+            if (_selectedImages.isNotEmpty)
+              SizedBox(
+                height: 100,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _selectedImages.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Image.file(
+                        _selectedImages[index],
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  },
+                ),
+              ),
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,

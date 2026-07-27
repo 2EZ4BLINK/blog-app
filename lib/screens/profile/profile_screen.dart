@@ -43,13 +43,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     void onHandleImageUpload() async {
       await profileProvider.uploadAvatar();
-      if (!context.mounted) return;
+
+      if (!mounted) return;
 
       if (profileProvider.errorMessage != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             showCloseIcon: true,
-            duration: Duration(seconds: 5),
+            duration: Duration(seconds: 3),
             content: StyledText('Failed uploading avatar'),
           ),
         );
@@ -57,7 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             showCloseIcon: true,
-            duration: Duration(seconds: 5),
+            duration: Duration(seconds: 3),
             content: StyledText('Avatar uploaded successfully'),
           ),
         );
@@ -152,9 +153,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                           if(profileProvider.errorMessage != null) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
+                              const SnackBar(
                                 showCloseIcon: true,
-                                duration: Duration(seconds: 5),
+                                duration: Duration(seconds: 3),
                                 content: StyledText("Failed updating profile"),
                               ),
                             );
@@ -162,7 +163,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 showCloseIcon: true,
-                                duration: Duration(seconds: 5),
+                                duration: Duration(seconds: 3),
                                 content: StyledText('Profile updated successfully'),
                               ),
                             );

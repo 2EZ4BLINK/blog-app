@@ -25,17 +25,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if(postProvider.errorMessage != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           showCloseIcon: true,
-          duration: Duration(seconds: 5),
+          duration: Duration(seconds: 3),
           content: StyledText('Failed deleting post'),
         ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           showCloseIcon: true,
-          duration: Duration(seconds: 5),
+          duration: Duration(seconds: 3),
           content: StyledText('Post deleted'),
         ),
       );

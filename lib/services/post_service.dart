@@ -5,24 +5,37 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class PostService {
   final supabase = Supabase.instance.client;
 
-  Future<void> createPost({
+  Future<String> createPost({
     required String title,
     required String content,
   }) async {
     final user = supabase.auth.currentUser!;
 
-   await supabase
-       .from('posts')
-       .insert({'author_id': user.id, 'title': title, 'content': content});
+    final response = await supabase
+        .from('posts')
+        .insert({
+          'author_id': user.id,
+          'title': title,
+          'content': content,
+        })
+        .select()
+        .single();
+
+    return response['id'];
   }
 
   Future<List<Post>> fetchPosts() async {
     final response = await supabase
         .from('posts')
-        .select()
+        .select('''
+          *,
+          post_images(*)
+        ''')
         .order('created_at', ascending: false);
 
-    List<Post> posts = response.map((json) => Post.fromJson(json)).toList();
+    List<Post> posts = response
+        .map((json) => Post.fromMap(json))
+        .toList();
 
     return posts;
   }

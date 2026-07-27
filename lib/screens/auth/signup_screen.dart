@@ -32,17 +32,17 @@ class _SignupScreenState extends State<SignupScreen> {
 
     if(authProvider.errorMessage != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           showCloseIcon: true,
-          duration: Duration(seconds: 5),
+          duration: Duration(seconds: 3),
           content: StyledText('Failed creating account'),
         ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           showCloseIcon: true,
-          duration: Duration(seconds: 5),
+          duration: Duration(seconds: 3),
           content: StyledText('Account successfully created'),
         ),
       );

@@ -8,20 +8,20 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class EditPostScreen extends StatefulWidget {
+  final Post post;
+
   const EditPostScreen({
     super.key,
     required this.post,
   });
-
-  final Post post;
 
   @override
   State<EditPostScreen> createState() => _EditPostScreenState();
 }
 
 class _EditPostScreenState extends State<EditPostScreen> {
-  late final TextEditingController _titleController;
-  late final TextEditingController _contentController;
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _contentController = TextEditingController();
 
   Future<void> _onHandleUpdatePost() async {
     final postProvider = context.read<PostProvider>();
@@ -32,21 +32,21 @@ class _EditPostScreenState extends State<EditPostScreen> {
       content: _contentController.text.trim(),
     );
 
-    if (!context.mounted) return;
+    if (!mounted) return;
 
     if(postProvider.errorMessage != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           showCloseIcon: true,
-          duration: Duration(seconds: 5),
+          duration: Duration(seconds: 3),
           content: StyledText('Failed updating post'),
         ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           showCloseIcon: true,
-          duration: Duration(seconds: 5),
+          duration: Duration(seconds: 3),
           content: StyledText('Post updated'),
         ),
       );
@@ -61,13 +61,8 @@ class _EditPostScreenState extends State<EditPostScreen> {
   void initState() {
     super.initState();
 
-    _titleController = TextEditingController(
-      text: widget.post.title,
-    );
-
-    _contentController = TextEditingController(
-      text: widget.post.content,
-    );
+    _titleController.text = widget.post.title;
+    _contentController.text = widget.post.content;
   }
 
   @override
