@@ -23,7 +23,8 @@ class Post {
         createdAt: DateTime.parse(map['created_at']),
         authorId: map['author_id'],
         title: map['title'],
-        content: map['content'], images: (map['post_images'] as List<dynamic>? ?? [])
+        content: map['content'],
+        images: (map['post_images'] as List<dynamic>? ?? [])
           .map((image) => PostImage.fromMap(image))
           .toList()
     );

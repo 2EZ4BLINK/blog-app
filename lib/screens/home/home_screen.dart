@@ -108,25 +108,48 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (post.images.isNotEmpty) ...[
+                      SizedBox(
+                        height: 120,
+                        child: ListView.builder(
+                          itemCount: post.images.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, imageIndex) {
+                            final image = post.images[imageIndex];
+
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.network(
+                                  image.imageUrl,
+                                  width: 120,
+                                  height: 120,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                    ],
                     StyledTitle(post.title),
                     const SizedBox(height: 15),
                     StyledText(post.content),
-                    const SizedBox(height: 10),
                     if (isOwner)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           IconButton(
-                            onPressed: () {
-                              context.push('/edit-post', extra: post);
-                            },
-                            icon: const Icon(Icons.edit),
                             color: AppColors.titleColor,
+                            icon: const Icon(Icons.edit),
+                            onPressed: () => context.push('/edit-post', extra: post),
                           ),
                           IconButton(
-                            onPressed: () => _onHandleDeletePost(post.id),
-                            icon: const Icon(Icons.delete),
                             color: AppColors.titleColor,
+                            icon: const Icon(Icons.delete),
+                            onPressed: () => _onHandleDeletePost(post.id),
                           ),
                         ],
                       ),

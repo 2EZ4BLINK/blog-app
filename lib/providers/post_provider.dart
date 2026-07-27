@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:blog_forum/config/supabase_config.dart';
 import 'package:blog_forum/models/post.dart';
 import 'package:blog_forum/services/post_service.dart';
@@ -14,20 +16,26 @@ class PostProvider extends ChangeNotifier{
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
-  Future<void> createPost({
+  Future<String?> createPost({
     required String title,
     required String content,
-  }) async {
+  }) async
+  {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try{
-      await _postService.createPost(title: title, content: content);
+      final postId = await _postService.createPost(
+        title: title,
+        content: content,
+      );
       await fetchPosts();
+      return postId;
     }
     catch(error){
       _errorMessage = error.toString();
+      return null;
     }
     finally{
       _isLoading = false;
@@ -78,7 +86,8 @@ class PostProvider extends ChangeNotifier{
     required String postId,
     required String title,
     required String content,
-  }) async {
+  }) async
+  {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
@@ -96,5 +105,30 @@ class PostProvider extends ChangeNotifier{
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<void> uploadPostImages({
+    required String postId,
+    required List<File> images,
+  }) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      for (final image in images) {
+        await _postService.uploadPostImage(
+          postId: postId,
+          image: image,
+        );
+      }
+    } catch (error) {
+      _errorMessage = error.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+
+    await fetchPosts();
   }
 }

@@ -39,9 +39,16 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   Future<void> _onHandleCreatePost() async {
     final postProvider = context.read<PostProvider>();
 
-    await postProvider.createPost(
+    final postId = await postProvider.createPost(
       title: _titleController.text.trim(),
       content: _contentController.text.trim(),
+    );
+
+    if (postId == null) return;
+
+    await postProvider.uploadPostImages(
+      postId: postId,
+      images: _selectedImages,
     );
 
     if (!mounted) return;
@@ -105,30 +112,43 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             if (postProvider.errorMessage != null)
               Text(postProvider.errorMessage!),
             const SizedBox(height: 16),
-            OutlinedButton(
-              onPressed: _pickImages,
-              child: const StyledText('Select Images'),
-            ),
-            const SizedBox(height: 16),
             if (_selectedImages.isNotEmpty)
               SizedBox(
-                height: 100,
+                height: 120,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: _selectedImages.length,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.only(right: 8),
-                      child: Image.file(
-                        _selectedImages[index],
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
+                      child: Column(
+                        children: [
+                          Image.file(
+                            _selectedImages[index],
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          ),
+                          const SizedBox(height: 20),
+
+                        ]
                       ),
                     );
                   },
                 ),
               ),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                onPressed: _pickImages,
+                child: const StyledText('Select Images'),
+              ),
+            ),
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,

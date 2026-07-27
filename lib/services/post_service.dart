@@ -1,4 +1,5 @@
-import 'package:blog_forum/config/supabase_config.dart';
+import 'dart:io';
+
 import 'package:blog_forum/models/post.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -8,7 +9,8 @@ class PostService {
   Future<String> createPost({
     required String title,
     required String content,
-  }) async {
+  }) async
+  {
     final user = supabase.auth.currentUser!;
 
     final response = await supabase
@@ -51,7 +53,8 @@ class PostService {
     required String postId,
     required String title,
     required String content,
-  }) async {
+  }) async
+  {
     await supabase
         .from('posts')
         .update({
@@ -59,5 +62,28 @@ class PostService {
           'content': content,
         })
         .eq('id', postId);
+  }
+
+  Future<void> uploadPostImage({
+    required String postId,
+    required File image,
+  }) async {
+    final user = supabase.auth.currentUser!;
+
+    final filePath =
+        '${user.id}/$postId/${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+    await supabase.storage
+        .from('post-images')
+        .upload(filePath, image);
+
+    final imageUrl = supabase.storage
+        .from('post-images')
+        .getPublicUrl(filePath);
+
+    await supabase.from('post_images').insert({
+      'post_id': postId,
+      'image_url': imageUrl,
+    });
   }
 }
