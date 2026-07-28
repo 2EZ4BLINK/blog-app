@@ -146,6 +146,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               width: double.infinity,
               child: OutlinedButton(
                 style: OutlinedButton.styleFrom(
+                  overlayColor: AppColors.textColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),
                   ),
@@ -159,6 +160,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
+                  overlayColor: AppColors.textColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4)
                   ),

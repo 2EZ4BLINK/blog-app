@@ -1,4 +1,5 @@
 import 'package:blog_forum/providers/auth_provider.dart';
+import 'package:blog_forum/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -74,8 +75,9 @@ class _SignupScreenState extends State<SignupScreen> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16),
-            child: InkWell(
-                onTap: () => context.go('/login'),
+            child: TextButton(
+                onPressed: () => context.go('/login'),
+                style: TextButton.styleFrom(overlayColor: AppColors.textColor),
                 child: StyledHeading('Login')
             ),
           ),

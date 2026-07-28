@@ -69,27 +69,24 @@ class _HomeScreenState extends State<HomeScreen> {
           child: const StyledTitle('Home'),
         ),
         actions: [
-          InkWell(
-            onTap: () {
+          TextButton(
+            onPressed: () {
               if(user == null) return;
               context.go('/profile');
             },
+            style: TextButton.styleFrom(overlayColor: AppColors.textColor),
             child: StyledText(user?.email ?? 'Guest'),
           ),
           if (user == null)
             TextButton(
-              style: TextButton.styleFrom(
-                overlayColor: AppColors.textColor,
-              ),
               onPressed: () => context.go('/login'),
+              style: TextButton.styleFrom(overlayColor: AppColors.textColor),
               child: const StyledHeading('Login'),
             )
           else
             TextButton(
-              style: TextButton.styleFrom(
-                overlayColor: AppColors.textColor,
-              ),
               onPressed: _onHandleSignOut,
+              style: TextButton.styleFrom(overlayColor: AppColors.textColor),
               child: const StyledHeading('Logout'),
             ),
         ],

@@ -57,6 +57,7 @@ class _StyledTextFieldState extends State<StyledTextField> {
                 });
               },
               icon: Icon(
+                color: AppColors.textColor,
                   _isObscured
                       ? Icons.visibility
                       : Icons.visibility_off

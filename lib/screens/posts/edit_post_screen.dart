@@ -99,6 +99,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
+                  overlayColor: AppColors.textColor,
                   backgroundColor: AppColors.secondaryColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),

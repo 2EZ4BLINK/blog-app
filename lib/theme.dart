@@ -72,4 +72,10 @@ ThemeData defaultTheme = ThemeData(
     backgroundColor: AppColors.secondaryAccent,
     surfaceTintColor: AppColors.secondaryAccent,
   ),
+
+  // Text Selection
+  textSelectionTheme: TextSelectionThemeData(
+    selectionColor:AppColors.secondaryAccent,
+    selectionHandleColor: AppColors.textColor,
+  ),
 );

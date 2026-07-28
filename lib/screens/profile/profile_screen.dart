@@ -74,9 +74,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16),
-              child: InkWell(
-                  onTap: () => context.go('/'),
-                  child: StyledHeading('Home')
+              child: TextButton(
+                  onPressed: () => context.go('/'),
+                  style: TextButton.styleFrom(overlayColor: AppColors.textColor),
+                  child: StyledHeading('Home'),
+
               ),
           ),
         ],
@@ -137,6 +139,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       width: double.infinity,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
+                          overlayColor: AppColors.textColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(4)
                           ),

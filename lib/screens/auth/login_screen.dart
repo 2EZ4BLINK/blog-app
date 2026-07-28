@@ -100,26 +100,20 @@ class _LoginScreenState extends State<LoginScreen> {
             const StyledTitle("Login"),
             const SizedBox(height: 24),
             StyledTextField(
-              controller: _emailController,
               label: "Email",
+              controller: _emailController,
+              onChanged: (_) => _clearEmailError(),
               keyboardType: TextInputType.emailAddress,
-              onChanged: (_) {
-                _clearEmailError();
-              },
             ),
 
             if (isEmailEmpty) ...[
               const SizedBox(height: 8),
-              const StyledTextError(
-                "Email should not be empty",
-              ),
+              const StyledTextError("Email should not be empty"),
             ],
 
             if (isEmailInvalid) ...[
               const SizedBox(height: 8),
-              const StyledTextError(
-                "Please enter a valid email address",
-              ),
+              const StyledTextError("Please enter a valid email address"),
             ],
 
             const SizedBox(height: 16),
@@ -128,23 +122,17 @@ class _LoginScreenState extends State<LoginScreen> {
               controller: _passwordController,
               label: "Password",
               obscureText: true,
-              onChanged: (_) {
-                _clearPasswordError();
-              },
+              onChanged: (_) => _clearPasswordError(),
             ),
 
             if (isPasswordEmpty) ...[
               const SizedBox(height: 8),
-              const StyledTextError(
-                "Password should not be empty",
-              ),
+              const StyledTextError("Password should not be empty"),
             ],
 
             if (authProvider.errorMessage != null) ...[
               const SizedBox(height: 8),
-              StyledTextError(
-                'Invalid login credentials',
-              ),
+              StyledTextError('Invalid login credentials'),
             ],
 
             const SizedBox(height: 8),
@@ -152,26 +140,18 @@ class _LoginScreenState extends State<LoginScreen> {
             Align(
               alignment: Alignment.center,
               child: TextButton(
-                style: TextButton.styleFrom(
-                  overlayColor: AppColors.textColor,
-                ),
                 onPressed: () {},
-                child: const StyledText(
-                  "Forgot Password?",
-                ),
+                style: TextButton.styleFrom(overlayColor: AppColors.textColor),
+                child: const StyledText("Forgot Password?"),
               ),
             ),
 
             Align(
               alignment: Alignment.center,
               child: TextButton(
-                style: TextButton.styleFrom(
-                  overlayColor: AppColors.textColor,
-                ),
                 onPressed: () => context.go('/signup'),
-                child: const StyledText(
-                  "Create an account",
-                ),
+                style: TextButton.styleFrom(overlayColor: AppColors.textColor),
+                child: const StyledText("Create an account"),
               ),
             ),
 
