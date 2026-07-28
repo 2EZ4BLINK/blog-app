@@ -1,3 +1,4 @@
+import 'package:blog_forum/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -56,31 +57,30 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _clearEmailError() {
+    final authProvider = context.read<AuthProvider>();
     if (isEmailEmpty || isEmailInvalid) {
       setState(() {
         isEmailEmpty = false;
         isEmailInvalid = false;
       });
     }
-
-    context.read<AuthProvider>().clearError();
+    authProvider.clearError();
   }
 
   void _clearPasswordError() {
+    final authProvider =  context.read<AuthProvider>();
     if (isPasswordEmpty) {
       setState(() {
         isPasswordEmpty = false;
       });
     }
-
-    context.read<AuthProvider>().clearError();
+    authProvider.clearError();
   }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-
     super.dispose();
   }
 
@@ -98,9 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const StyledTitle("Login"),
-
             const SizedBox(height: 24),
-
             StyledTextField(
               controller: _emailController,
               label: "Email",
@@ -154,6 +152,9 @@ class _LoginScreenState extends State<LoginScreen> {
             Align(
               alignment: Alignment.center,
               child: TextButton(
+                style: TextButton.styleFrom(
+                  overlayColor: AppColors.textColor,
+                ),
                 onPressed: () {},
                 child: const StyledText(
                   "Forgot Password?",
@@ -164,9 +165,10 @@ class _LoginScreenState extends State<LoginScreen> {
             Align(
               alignment: Alignment.center,
               child: TextButton(
-                onPressed: () {
-                  context.go('/signup');
-                },
+                style: TextButton.styleFrom(
+                  overlayColor: AppColors.textColor,
+                ),
+                onPressed: () => context.go('/signup'),
                 child: const StyledText(
                   "Create an account",
                 ),

@@ -42,6 +42,12 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _onHandleSignOut() async {
+    await context.read<AuthProvider>().signOut();
+    if (!mounted) return;
+    context.go('/');
+  }
+
   @override
   void initState() {
     super.initState();
@@ -72,16 +78,18 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           if (user == null)
             TextButton(
-              onPressed: () {context.go('/login');},
+              style: TextButton.styleFrom(
+                overlayColor: AppColors.textColor,
+              ),
+              onPressed: () => context.go('/login'),
               child: const StyledHeading('Login'),
             )
           else
             TextButton(
-              onPressed: () async {
-                await context.read<AuthProvider>().signOut();
-                if (!context.mounted) return;
-                context.go('/');
-              },
+              style: TextButton.styleFrom(
+                overlayColor: AppColors.textColor,
+              ),
+              onPressed: _onHandleSignOut,
               child: const StyledHeading('Logout'),
             ),
         ],

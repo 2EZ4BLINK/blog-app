@@ -67,12 +67,27 @@ class _SignupScreenState extends State<SignupScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const StyledTitle('Sign Up'),
+        title: Align(
+          alignment: Alignment.topLeft,
+          child: const StyledTitle('Sign Up'),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: InkWell(
+                onTap: () => context.go('/login'),
+                child: StyledHeading('Login')
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            StyledTitle('Signup'),
+            const SizedBox(height: 24),
             StyledTextField(
               controller: nameController,
               label: 'Name',
