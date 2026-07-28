@@ -1,7 +1,9 @@
+import 'package:blog_forum/models/comment.dart';
 import 'package:blog_forum/models/post.dart';
 import 'package:blog_forum/providers/auth_provider.dart';
 import 'package:blog_forum/screens/auth/login_screen.dart';
 import 'package:blog_forum/screens/auth/signup_screen.dart';
+import 'package:blog_forum/screens/comments/edit_comment_screen.dart';
 import 'package:blog_forum/screens/home/home_screen.dart';
 import 'package:blog_forum/screens/posts/create_post_screen.dart';
 import 'package:blog_forum/screens/posts/edit_post_screen.dart';
@@ -63,6 +65,13 @@ GoRouter createRouter(AuthProvider authProvider) {
           return PostDetailsScreen(post: post);
         },
       ),
+      GoRoute(
+        path: '/edit-comment',
+        builder: (context, state) {
+          final comment = state.extra as Comment;
+          return EditCommentScreen(comment: comment);
+        }
+      )
     ],
     redirect: (context, state) {
       final isLoggedIn = authProvider.isLoggedIn;

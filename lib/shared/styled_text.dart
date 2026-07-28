@@ -3,15 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class StyledText extends StatelessWidget {
-  const StyledText(this.text,{super.key, this.color});
+  const StyledText(this.text,{super.key, this.color, this.fontSize});
 
-  final String text;
+  final String? text;
   final Color? color;
+  final double? fontSize;
 
   @override
   Widget build(BuildContext context) {
-    return Text(text, style: GoogleFonts.robotoMono(
-        textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: color),
+    return Text(text ?? '', style: GoogleFonts.robotoMono(
+        textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: color, fontSize: fontSize),
     ));
   }
 }
@@ -19,11 +20,11 @@ class StyledText extends StatelessWidget {
 class StyledTextError extends StatelessWidget {
   const StyledTextError(this.text, {super.key});
 
-  final String text;
+  final String? text;
 
   @override
   Widget build(BuildContext context) {
-    return Text(text, style: GoogleFonts.robotoMono(
+    return Text(text ?? '', style: GoogleFonts.robotoMono(
         textStyle: Theme.of(context).textTheme.bodyMedium,
             color: AppColors.primaryColor
     ));
@@ -33,11 +34,11 @@ class StyledTextError extends StatelessWidget {
 class StyledHeading extends StatelessWidget {
   const StyledHeading(this.text, {super.key});
 
-  final String text;
+  final String? text;
 
   @override
   Widget build(BuildContext context) {
-    return Text(text.toUpperCase(), style: GoogleFonts.robotoMono(
+    return Text(text?.toUpperCase() ?? '', style: GoogleFonts.robotoMono(
         textStyle: Theme.of(context).textTheme.headlineMedium
     ));
   }
@@ -46,11 +47,11 @@ class StyledHeading extends StatelessWidget {
 class StyledTitle extends StatelessWidget {
   const StyledTitle(this.text, {super.key});
 
-  final String text;
+  final String? text;
 
   @override
   Widget build(BuildContext context) {
-    return Text(text.toUpperCase(), style: GoogleFonts.robotoMono(
+    return Text(text?.toUpperCase() ?? '', style: GoogleFonts.robotoMono(
         textStyle: Theme.of(context).textTheme.titleMedium
     ));
   }
