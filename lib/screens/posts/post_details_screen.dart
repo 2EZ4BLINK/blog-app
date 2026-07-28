@@ -25,7 +25,6 @@ class PostDetailsScreen extends StatefulWidget {
 
 class _PostDetailsScreenState extends State<PostDetailsScreen> {
   final TextEditingController _commentController = TextEditingController();
-  String? _userName;
 
   Future<void> _onHandlePostComment() async {
     if (_commentController.text.trim().isEmpty) return;
@@ -79,15 +78,6 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
     context
       .read<CommentProvider>()
       .fetchComments(widget.post.id);
-
-    Future.microtask(() async {
-     final profileProvider = context.read<ProfileProvider>();
-     await profileProvider.fetchCurrentProfile();
-     if (!mounted) return;
-     setState(() {
-      _userName = profileProvider.profile!.name;
-     });
-    });
   }
 
   @override
@@ -139,8 +129,6 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            StyledText(_userName, fontSize: 18),
-                            const SizedBox(height: 24),
                             StyledText(comment.content),
 
                             if (comment.authorId == user!.id)
