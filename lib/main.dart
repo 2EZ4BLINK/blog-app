@@ -1,4 +1,5 @@
 import 'package:blog_forum/providers/auth_provider.dart';
+import 'package:blog_forum/providers/comment_provider.dart';
 import 'package:blog_forum/providers/post_provider.dart';
 import 'package:blog_forum/providers/profile_provider.dart';
 import 'package:blog_forum/routes/app_router.dart';
@@ -19,6 +20,7 @@ Future<void> main() async {
   final authProvider = AuthProvider();
   final postProvider = PostProvider();
   final profileProvider = ProfileProvider();
+  final commentProvider = CommentProvider();
   final router = createRouter(authProvider);
 
   runApp(
@@ -32,6 +34,9 @@ Future<void> main() async {
         ),
         ChangeNotifierProvider.value(
           value: profileProvider,
+        ),
+        ChangeNotifierProvider.value(
+          value: commentProvider,
         )
       ],
       child: MyApp(router: router),

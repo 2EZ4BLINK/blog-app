@@ -46,9 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
-    Future.microtask(() {
-      context.read<PostProvider>().fetchPosts();
-    });
+    context.read<PostProvider>().fetchPosts();
   }
 
   @override
@@ -65,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: const StyledTitle('Home'),
         ),
         actions: [
-          GestureDetector(
+          InkWell(
             onTap: () {
               if(user == null) return;
               context.go('/profile');
@@ -103,57 +101,65 @@ class _HomeScreenState extends State<HomeScreen> {
             final isOwner = user?.id == post.authorId;
 
             return Card(
-              child: Padding(
-                padding: const EdgeInsets.all(15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (post.images.isNotEmpty) ...[
-                      SizedBox(
-                        height: 120,
-                        child: ListView.builder(
-                          itemCount: post.images.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, imageIndex) {
-                            final image = post.images[imageIndex];
-
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 8),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.network(
-                                  image.imageUrl,
-                                  width: 120,
-                                  height: 120,
-                                  fit: BoxFit.cover,
+              child: InkWell(
+                onTap: () {
+                  context.push(
+                    '/post-details',
+                    extra: post,
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (post.images.isNotEmpty) ...[
+                        SizedBox(
+                          height: 120,
+                          child: ListView.builder(
+                            itemCount: post.images.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, imageIndex) {
+                              final image = post.images[imageIndex];
+                
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 8),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.network(
+                                    image.imageUrl,
+                                    width: 120,
+                                    height: 120,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: 15),
+                      ],
+                      StyledTitle(post.title),
                       const SizedBox(height: 15),
+                      StyledText(post.content),
+                      if (isOwner)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              color: AppColors.titleColor,
+                              icon: const Icon(Icons.edit),
+                              onPressed: () => context.push('/edit-post', extra: post),
+                            ),
+                            IconButton(
+                              color: AppColors.titleColor,
+                              icon: const Icon(Icons.delete),
+                              onPressed: () => _onHandleDeletePost(post.id),
+                            ),
+                          ],
+                        ),
                     ],
-                    StyledTitle(post.title),
-                    const SizedBox(height: 15),
-                    StyledText(post.content),
-                    if (isOwner)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(
-                            color: AppColors.titleColor,
-                            icon: const Icon(Icons.edit),
-                            onPressed: () => context.push('/edit-post', extra: post),
-                          ),
-                          IconButton(
-                            color: AppColors.titleColor,
-                            icon: const Icon(Icons.delete),
-                            onPressed: () => _onHandleDeletePost(post.id),
-                          ),
-                        ],
-                      ),
-                  ],
+                  ),
                 ),
               )
             );

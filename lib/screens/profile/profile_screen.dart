@@ -74,12 +74,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16),
-            child: GestureDetector(
-              onTap: () {context.go('/');},
-              child: const Center(
-                child: StyledHeading('Home'),
+              child: InkWell(
+                  onTap: () => context.go('/'),
+                  child: StyledHeading('Home')
               ),
-            ),
           ),
         ],
       ),
@@ -100,9 +98,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.all(24),
                 child: Column(
                   children: [
-                    GestureDetector(
-                      onTap: onHandleImageUpload,
-                      child: CircleAvatar(
+                   InkWell(
+                     onTap: onHandleImageUpload,
+                     child: CircleAvatar(
                         radius: 40,
                         backgroundColor: AppColors.textColor,
                         backgroundImage: profileProvider.profile?.avatarUrl != null
@@ -111,8 +109,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: profileProvider.profile?.avatarUrl == null
                             ? const Icon(Icons.person, size: 40)
                             : null,
-                      ),
-                    ),
+                     ),
+                   ),
 
                     const SizedBox(height: 10),
                     StyledTitle(profileProvider.profile!.name),
