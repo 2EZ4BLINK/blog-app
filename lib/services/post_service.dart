@@ -89,30 +89,63 @@ class PostService {
     });
   }
 
+
   Future<List<Comment>> fetchComments(String postId) async {
     final response = await supabase
         .from('comments')
-        .select()
+        .select('''
+          *,
+          comment_images(*)
+        ''')
         .eq('post_id', postId)
-        .order('created_at', ascending: false);
+        .order('created_at');
 
-    final comments = response
-        .map((json) => Comment.fromMap(json))
+    List<Comment> comments = response
+        .map((comment) => Comment.fromMap(comment))
         .toList();
 
     return comments;
   }
 
-  Future<void> createComment({
+  Future<String> createComment({
     required String postId,
     required String content,
   }) async {
     final user = supabase.auth.currentUser!;
 
-    await supabase.from('comments').insert({
-      'post_id': postId,
-      'author_id': user.id,
-      'content': content,
+    final response = await supabase
+        .from('comments')
+        .insert({
+          'post_id': postId,
+          'author_id': user.id,
+          'content': content,
+        })
+        .select()
+        .single();
+
+    return response['id'];
+  }
+
+  Future<void> uploadCommentImage({
+    required String commentId,
+    required File image,
+  }) async {
+    final user = supabase.auth.currentUser!;
+
+    final String filePath =
+        '${user.id}/$commentId/${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+    await supabase.storage
+        .from('comment-images')
+        .upload(filePath, image);
+
+    final String imageUrl = supabase.storage
+        .from('comment-images')
+        .getPublicUrl(filePath);
+
+    await supabase.from('comment_images').insert({
+      'comment_id': commentId,
+      'image_url': imageUrl,
     });
   }
 

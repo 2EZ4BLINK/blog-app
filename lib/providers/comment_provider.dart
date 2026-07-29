@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:blog_forum/models/comment.dart';
 import 'package:blog_forum/services/post_service.dart';
 import 'package:flutter/material.dart';
@@ -31,17 +33,23 @@ class CommentProvider extends ChangeNotifier {
   Future<void> createComment({
     required String postId,
     required String content,
-  }) async
-  {
+    required List<File> images,
+  }) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      await _postService.createComment(
+      final commentId = await _postService.createComment(
         postId: postId,
         content: content,
       );
+      for (final image in images) {
+        await _postService.uploadCommentImage(
+          commentId: commentId,
+          image: image,
+        );
+      }
       await fetchComments(postId);
     } catch (error) {
       _errorMessage = error.toString();

@@ -64,7 +64,7 @@ class PostProvider extends ChangeNotifier{
     }
   }
 
-  Future<void> deletePost(postId) async {
+  Future<void> deletePost(String postId) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
@@ -133,6 +133,4 @@ class PostProvider extends ChangeNotifier{
 
     await fetchPosts();
   }
-
-
 }
