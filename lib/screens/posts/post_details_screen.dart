@@ -69,7 +69,10 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
   }
 
   Future<void> _onHandleEditPost(Comment comment) async {
-    context.push('/edit-comment', extra: comment);
+    context.push('/edit-comment', extra: {
+      'post': widget.post,
+      'comment': comment
+    });
   }
 
   @override
@@ -103,12 +106,10 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
             StyledHeading(widget.post.title),
             const SizedBox(height: 8),
             StyledText(widget.post.content),
-            const SizedBox(height: 100),
-            Divider(
-              color: AppColors.textColor
-            ),
+            const SizedBox(height: 120),
+            StyledText('Comments'),
             const SizedBox(height: 12),
-            StyledTitle('Comments'),
+            Divider(color: AppColors.textColor),
             const SizedBox(height: 12),
 
             commentProvider.isLoading

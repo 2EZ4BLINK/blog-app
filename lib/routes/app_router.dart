@@ -67,10 +67,17 @@ GoRouter createRouter(AuthProvider authProvider) {
       ),
       GoRoute(
         path: '/edit-comment',
-        builder: (context, state) {
-          final comment = state.extra as Comment;
-          return EditCommentScreen(comment: comment);
-        }
+          builder: (context, state) {
+            final data = state.extra as Map<String, dynamic>;
+
+            final post = data['post'] as Post;
+            final comment = data['comment'] as Comment;
+
+            return EditCommentScreen(
+              post: post,
+              comment: comment,
+            );
+          }
       )
     ],
     redirect: (context, state) {
