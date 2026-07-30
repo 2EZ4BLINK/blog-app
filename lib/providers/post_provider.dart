@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:blog_forum/config/supabase_config.dart';
-import 'package:blog_forum/models/comment.dart';
 import 'package:blog_forum/models/post.dart';
 import 'package:blog_forum/models/post_image.dart';
 import 'package:blog_forum/services/post_service.dart';

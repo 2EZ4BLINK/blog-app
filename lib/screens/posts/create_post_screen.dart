@@ -26,8 +26,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   List<File> _selectedImages = [];
 
   Future<void> _pickImages() async {
-    final _picker = ImagePicker();
-    final List<XFile> images = await _picker.pickMultiImage();
+    final picker = ImagePicker();
+    final List<XFile> images = await picker.pickMultiImage();
 
     setState(() {
       _selectedImages = images

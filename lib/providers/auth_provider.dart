@@ -57,7 +57,6 @@ class AuthProvider extends ChangeNotifier {
 
       return true;
     } catch (error) {
-      print("error: $error");
       _errorMessage = error.toString();
       return false;
     } finally {

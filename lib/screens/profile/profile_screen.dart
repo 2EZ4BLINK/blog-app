@@ -18,18 +18,24 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _nameController = TextEditingController();
 
+  Future<void> _loadProfile() async {
+    final profileProvider = context.read<ProfileProvider>();
+
+    await profileProvider.fetchCurrentProfile();
+
+    if (!mounted) return;
+
+    if (profileProvider.profile != null) {
+      _nameController.text = profileProvider.profile!.name;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-
-    Future.microtask(() async {
-      final profileProvider = context.read<ProfileProvider>();
-      await profileProvider.fetchCurrentProfile();
-      if (profileProvider.profile != null) {
-        _nameController.text = profileProvider.profile!.name;
-      }
-    });
+    _loadProfile();
   }
+
 
   @override
   void dispose() {
@@ -43,8 +49,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final user = Supabase.instance.client.auth.currentUser;
     final ImagePicker picker = ImagePicker();
 
-
     void onHandleImageUpload() async {
+      final messenger = ScaffoldMessenger.of(context);
+
       final XFile? image = await picker.pickImage(
         source: ImageSource.gallery,
       );
@@ -56,7 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (!mounted) return;
 
       if (profileProvider.errorMessage != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        messenger.showSnackBar(
           const SnackBar(
             showCloseIcon: true,
             duration: Duration(seconds: 3),
@@ -64,11 +71,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
+        messenger.showSnackBar(
           const SnackBar(
             showCloseIcon: true,
             duration: Duration(seconds: 3),
             content: StyledText('Avatar uploaded successfully'),
+          ),
+        );
+      }
+    }
+
+    void onHandleUpdateName() async {
+      final messenger = ScaffoldMessenger.of(context);
+
+      await profileProvider.updateProfile(
+        name: _nameController.text.trim(),
+      );
+
+      if (!mounted) return;
+
+      if(profileProvider.errorMessage != null) {
+        messenger.showSnackBar(
+          const SnackBar(
+            showCloseIcon: true,
+            duration: Duration(seconds: 3),
+            content: StyledText("Failed updating name"),
+          ),
+        );
+      } else {
+        messenger.showSnackBar(
+          const SnackBar(
+            showCloseIcon: true,
+            duration: Duration(seconds: 3),
+            content: StyledText('Name updated successfully'),
           ),
         );
       }
@@ -154,31 +189,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           backgroundColor: AppColors.secondaryColor,
                         ),
-                        onPressed: () async {
-                          await profileProvider.updateProfile(
-                            name: _nameController.text.trim(),
-                          );
-
-                          if (!context.mounted) return;
-
-                          if(profileProvider.errorMessage != null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                showCloseIcon: true,
-                                duration: Duration(seconds: 3),
-                                content: StyledText("Failed updating profile"),
-                              ),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                showCloseIcon: true,
-                                duration: Duration(seconds: 3),
-                                content: StyledText('Profile updated successfully'),
-                              ),
-                            );
-                          }
-                        },
+                        onPressed: onHandleUpdateName,
                         child: !profileProvider.isLoading
                             ? StyledText('Save')
                             : StyledText('Saving...'),
