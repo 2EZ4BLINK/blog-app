@@ -38,7 +38,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
   Future<void> _onHandleCreatePost() async {
     final trimmedTitle = _titleController.text.trim();
-    final trimmedContent = _titleController.text.trim();
+    final trimmedContent = _contentController.text.trim();
 
     if(trimmedTitle.isEmpty || trimmedContent.isEmpty) return;
 

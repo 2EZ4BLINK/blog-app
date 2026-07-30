@@ -140,15 +140,6 @@ class _LoginScreenState extends State<LoginScreen> {
             Align(
               alignment: Alignment.center,
               child: TextButton(
-                onPressed: () {},
-                style: TextButton.styleFrom(overlayColor: AppColors.textColor),
-                child: const StyledText("Forgot Password?"),
-              ),
-            ),
-
-            Align(
-              alignment: Alignment.center,
-              child: TextButton(
                 onPressed: () => context.go('/signup'),
                 style: TextButton.styleFrom(overlayColor: AppColors.textColor),
                 child: const StyledText("Create an account"),

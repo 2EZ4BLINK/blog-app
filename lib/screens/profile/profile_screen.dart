@@ -4,6 +4,7 @@ import 'package:blog_forum/shared/styled_text_field.dart';
 import 'package:blog_forum/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -40,9 +41,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final profileProvider = context.watch<ProfileProvider>();
     final user = Supabase.instance.client.auth.currentUser;
+    final ImagePicker picker = ImagePicker();
+
 
     void onHandleImageUpload() async {
-      await profileProvider.uploadAvatar();
+      final XFile? image = await picker.pickImage(
+        source: ImageSource.gallery,
+      );
+
+      if (image == null) return;
+
+      await profileProvider.uploadAvatar(image);
 
       if (!mounted) return;
 

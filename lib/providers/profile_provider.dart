@@ -1,6 +1,7 @@
 import 'package:blog_forum/models/profiles.dart';
 import 'package:blog_forum/services/profile_service.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfileProvider extends ChangeNotifier {
   final ProfileService _profileService = ProfileService();
@@ -48,12 +49,12 @@ class ProfileProvider extends ChangeNotifier {
     }
   }
 
-Future<void> uploadAvatar() async {
+Future<void> uploadAvatar(XFile image) async {
      _errorMessage = null;
      notifyListeners();
 
      try{
-       await _profileService.uploadAvatar();
+       await _profileService.uploadAvatar(image);
        await fetchCurrentProfile();
      }
      catch(error){
