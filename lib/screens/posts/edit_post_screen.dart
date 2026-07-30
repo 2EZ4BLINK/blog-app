@@ -6,6 +6,7 @@ import 'package:blog_forum/providers/post_provider.dart';
 import 'package:blog_forum/shared/styled_text.dart';
 import 'package:blog_forum/shared/styled_text_field.dart';
 import 'package:blog_forum/theme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -27,7 +28,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
 
-  final List<File> _newImages = [];
+  final List<XFile> _newImages = [];
   late List<PostImage> _existingImages;
 
   Future<void> _pickImages() async {
@@ -36,9 +37,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
     if (selectedImages.isEmpty) return;
 
     setState(() {
-      _newImages.addAll(
-        selectedImages.map((image) => File(image.path)),
-      );
+      _newImages.addAll(selectedImages);
     });
   }
 
@@ -165,8 +164,27 @@ class _EditPostScreenState extends State<EditPostScreen> {
                       padding: const EdgeInsets.only(right: 8),
                       child: Stack(
                         children: [
-                          Image.file(
-                            _newImages[index],
+                          if(kIsWeb)
+                            FutureBuilder<Uint8List>(
+                              future: _newImages[index].readAsBytes(),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return const SizedBox(
+                                    width: 100,
+                                    height: 100,
+                                  );
+                                }
+
+                                return Image.memory(
+                                  snapshot.data!,
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                            )
+                          else Image.file(
+                            File(_newImages[index].path),
                             width: 100,
                             height: 100,
                             fit: BoxFit.cover,

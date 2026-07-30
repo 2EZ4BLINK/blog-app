@@ -1,9 +1,8 @@
-import 'dart:io';
-
 import 'package:blog_forum/models/post.dart';
 import 'package:blog_forum/models/post_image.dart';
 import 'package:blog_forum/services/post_service.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class PostProvider extends ChangeNotifier{
   final PostService _postService = PostService();
@@ -109,7 +108,7 @@ class PostProvider extends ChangeNotifier{
     required String content,
     required List<PostImage> originalImages,
     required List<PostImage> existingImages,
-    required List<File> newImages,
+    required List<XFile> newImages,
   }) async
   {
     _isLoading = true;
@@ -153,7 +152,7 @@ class PostProvider extends ChangeNotifier{
 
   Future<void> uploadPostImages({
     required String postId,
-    required List<File> images,
+    required List<XFile> images,
   }) async
   {
     _isLoading = true;

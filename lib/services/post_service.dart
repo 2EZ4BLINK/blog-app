@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:blog_forum/models/comment.dart';
 import 'package:blog_forum/models/post.dart';
+import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PostService {
@@ -74,7 +76,7 @@ class PostService {
 
   Future<void> uploadPostImage({
     required String postId,
-    required File image,
+    required XFile image,
   }) async
   {
     final user = supabase.auth.currentUser!;
@@ -82,9 +84,19 @@ class PostService {
     final filePath =
         '${user.id}/$postId/${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-    await supabase.storage
-        .from('post-images')
-        .upload(filePath, image);
+    if (kIsWeb) {
+      final bytes = await image.readAsBytes();
+
+      await supabase.storage
+          .from('post-images')
+          .uploadBinary(filePath, bytes);
+    } else {
+      final imageFile = File(image.path);
+
+      await supabase.storage
+          .from('post-images')
+          .upload(filePath, imageFile);
+    }
 
     final imageUrl = supabase.storage
         .from('post-images')
@@ -145,7 +157,7 @@ class PostService {
 
   Future<void> uploadCommentImage({
     required String commentId,
-    required File image,
+    required XFile image,
   }) async
   {
     final user = supabase.auth.currentUser!;
@@ -153,9 +165,19 @@ class PostService {
     final String filePath =
         '${user.id}/$commentId/${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-    await supabase.storage
-        .from('comment-images')
-        .upload(filePath, image);
+    if (kIsWeb) {
+      final bytes = await image.readAsBytes();
+
+      await supabase.storage
+          .from('comment-images')
+          .uploadBinary(filePath, bytes);
+    } else {
+      final imageFile = File(image.path);
+
+      await supabase.storage
+          .from('comment-images')
+          .upload(filePath, imageFile);
+    }
 
     final String imageUrl = supabase.storage
         .from('comment-images')

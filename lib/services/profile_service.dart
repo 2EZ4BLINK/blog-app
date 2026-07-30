@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:blog_forum/models/profiles.dart';
+import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -38,9 +39,17 @@ class ProfileService {
     final String filePath =
         '${user.id}/${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-    await supabase.storage
-        .from('avatars')
-        .upload(filePath, imageFile);
+    if (kIsWeb) {
+      final bytes = await image.readAsBytes();
+
+      await supabase.storage
+          .from('avatars')
+          .uploadBinary(filePath, bytes);
+    } else {
+      await supabase.storage
+          .from('avatars')
+          .upload(filePath, imageFile);
+    }
 
     final String avatarUrl = supabase.storage
         .from('avatars')

@@ -1,9 +1,8 @@
-import 'dart:io';
-
 import 'package:blog_forum/models/comment.dart';
 import 'package:blog_forum/models/comment_image.dart';
 import 'package:blog_forum/services/post_service.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CommentProvider extends ChangeNotifier {
   final PostService _postService = PostService();
@@ -34,7 +33,7 @@ class CommentProvider extends ChangeNotifier {
   Future<void> createComment({
     required String postId,
     required String content,
-    required List<File> images,
+    required List<XFile> images,
   }) async {
     _isLoading = true;
     _errorMessage = null;
@@ -66,7 +65,7 @@ class CommentProvider extends ChangeNotifier {
     required String content,
     required List<CommentImage> originalImages,
     required List<CommentImage> existingImages,
-    required List<File> newImages,
+    required List<XFile> newImages,
   }) async
   {
     _isLoading = true;

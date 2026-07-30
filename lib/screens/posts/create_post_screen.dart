@@ -4,6 +4,7 @@ import 'package:blog_forum/providers/post_provider.dart';
 import 'package:blog_forum/shared/styled_text.dart';
 import 'package:blog_forum/shared/styled_text_field.dart';
 import 'package:blog_forum/theme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -23,16 +24,14 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   final TextEditingController _contentController =
   TextEditingController();
 
-  List<File> _selectedImages = [];
+  List<XFile> _selectedImages = [];
 
   Future<void> _pickImages() async {
     final picker = ImagePicker();
     final List<XFile> images = await picker.pickMultiImage();
 
     setState(() {
-      _selectedImages = images
-          .map((image) => File(image.path))
-          .toList();
+      _selectedImages = images;
     });
   }
 
@@ -129,14 +128,28 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                       padding: const EdgeInsets.only(right: 8),
                       child: Column(
                         children: [
-                          Image.file(
-                            _selectedImages[index],
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover,
-                          ),
-                          const SizedBox(height: 20),
+                          if (kIsWeb)
+                            FutureBuilder<Uint8List>(
+                              future: _selectedImages[index].readAsBytes(),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) return const SizedBox();
 
+                                return Image.memory(
+                                  snapshot.data!,
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                            )
+                          else
+                            Image.file(
+                              File(_selectedImages[index].path),
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            ),
+                          const SizedBox(height: 20),
                         ]
                       ),
                     );

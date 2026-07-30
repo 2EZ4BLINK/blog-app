@@ -6,6 +6,7 @@ import 'package:blog_forum/providers/comment_provider.dart';
 import 'package:blog_forum/shared/styled_text.dart';
 import 'package:blog_forum/shared/styled_text_field.dart';
 import 'package:blog_forum/theme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +31,7 @@ class EditCommentScreen extends StatefulWidget {
 class _EditCommentScreenState extends State<EditCommentScreen> {
   final TextEditingController _commentController = TextEditingController();
 
-  final List<File> _newImages = [];
+  final List<XFile> _newImages = [];
   late List<CommentImage> _existingImages;
 
   Future<void> _pickImages() async {
@@ -40,9 +41,7 @@ class _EditCommentScreenState extends State<EditCommentScreen> {
     if (selectedImages.isEmpty) return;
 
     setState(() {
-      _newImages.addAll(
-        selectedImages.map((image) => File(image.path)),
-      );
+      _newImages.addAll(selectedImages);
     });
   }
 
@@ -165,12 +164,31 @@ class _EditCommentScreenState extends State<EditCommentScreen> {
                       padding: const EdgeInsets.only(right: 8),
                       child: Stack(
                         children: [
-                          Image.file(
-                            _newImages[index],
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover,
-                          ),
+                          kIsWeb
+                              ? FutureBuilder<Uint8List>(
+                                future: _newImages[index].readAsBytes(),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return const SizedBox(
+                                      width: 100,
+                                      height: 100,
+                                    );
+                                  }
+
+                                  return Image.memory(
+                                    snapshot.data!,
+                                    width: 100,
+                                    height: 100,
+                                    fit: BoxFit.cover,
+                                  );
+                                },
+                              )
+                              : Image.file(
+                                  File(_newImages[index].path),
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
+                                ),
                           Positioned(
                             top: 2,
                             right: 2,

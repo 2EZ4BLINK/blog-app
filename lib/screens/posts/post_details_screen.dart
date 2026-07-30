@@ -6,6 +6,7 @@ import 'package:blog_forum/providers/comment_provider.dart';
 import 'package:blog_forum/shared/styled_text.dart';
 import 'package:blog_forum/shared/styled_text_field.dart';
 import 'package:blog_forum/theme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -26,7 +27,7 @@ class PostDetailsScreen extends StatefulWidget {
 
 class _PostDetailsScreenState extends State<PostDetailsScreen> {
   final TextEditingController _commentController = TextEditingController();
-  final List<File> _selectedImages = [];
+  final List<XFile> _selectedImages = [];
 
   Future<void> _pickImages() async {
     final ImagePicker picker = ImagePicker();
@@ -35,9 +36,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
     if (images.isEmpty) return;
 
     setState(() {
-      _selectedImages.addAll(
-        images.map((image) => File(image.path)),
-      );
+      _selectedImages.addAll(images);
     });
   }
 
@@ -232,12 +231,31 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.only(right: 8),
-                      child: Image.file(
-                        _selectedImages[index],
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
+                      child: kIsWeb
+                          ? FutureBuilder<Uint8List>(
+                              future: _selectedImages[index].readAsBytes(),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return const SizedBox(
+                                    width: 100,
+                                    height: 100,
+                                  );
+                                }
+
+                                return Image.memory(
+                                  snapshot.data!,
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                            )
+                          : Image.file(
+                              File(_selectedImages[index].path),
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            ),
                     );
                   },
                 ),
