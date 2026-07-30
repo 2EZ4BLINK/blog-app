@@ -15,15 +15,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   Future<void> _onHandleDeletePost(String postId) async {
     final postProvider = context.read<PostProvider>();
 
-    if(!context.mounted) return;
-
     await postProvider.deletePost(postId);
 
-    if(postProvider.errorMessage != null) {
+    if (!mounted) return;
+
+    if (postProvider.errorMessage != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           showCloseIcon: true,
@@ -44,15 +43,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _onHandleSignOut() async {
     await context.read<AuthProvider>().signOut();
+
     if (!mounted) return;
+
     context.go('/');
+  }
+
+  Future<void> _onHandleLoadMore() async {
+    await context.read<PostProvider>().fetchPosts();
   }
 
   @override
   void initState() {
     super.initState();
 
-    context.read<PostProvider>().fetchPosts();
+    context.read<PostProvider>().fetchPosts(
+      refresh: true,
+    );
   }
 
   @override
@@ -64,44 +71,78 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Align(
+        title: const Align(
           alignment: Alignment.topLeft,
-          child: const StyledTitle('Home'),
+          child: StyledTitle('Home'),
         ),
         actions: [
           TextButton(
             onPressed: () {
-              if(user == null) return;
+              if (user == null) return;
+
               context.go('/profile');
             },
-            style: TextButton.styleFrom(overlayColor: AppColors.textColor),
+            style: TextButton.styleFrom(
+              overlayColor: AppColors.textColor,
+            ),
             child: StyledText(user?.email ?? 'Guest'),
           ),
           if (user == null)
             TextButton(
               onPressed: () => context.go('/login'),
-              style: TextButton.styleFrom(overlayColor: AppColors.textColor),
+              style: TextButton.styleFrom(
+                overlayColor: AppColors.textColor,
+              ),
               child: const StyledHeading('Login'),
             )
           else
             TextButton(
               onPressed: _onHandleSignOut,
-              style: TextButton.styleFrom(overlayColor: AppColors.textColor),
+              style: TextButton.styleFrom(
+                overlayColor: AppColors.textColor,
+              ),
               child: const StyledHeading('Logout'),
             ),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: postProvider.isLoading
+        child: postProvider.isLoading && postProvider.posts.isEmpty
             ? Center(child: CircularProgressIndicator(color: AppColors.textColor))
-            : postProvider.errorMessage != null
+            : postProvider.errorMessage != null && postProvider.posts.isEmpty
             ? Center(child: StyledText(postProvider.errorMessage!))
-            : postProvider.posts.isEmpty 
+            : postProvider.posts.isEmpty
             ? const Center(child: StyledText('Start creating a post.'))
             : ListView.builder(
-          itemCount: postProvider.posts.length,
+          itemCount: postProvider.posts.length + 1,
           itemBuilder: (context, index) {
+            if (index == postProvider.posts.length) {
+              if (!postProvider.hasMore) {
+                return const SizedBox.shrink();
+              }
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton(
+                    onPressed: postProvider.isLoading
+                        ? null
+                        : _onHandleLoadMore,
+                    style: OutlinedButton.styleFrom(
+                      overlayColor: AppColors.textColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    child: postProvider.isLoading
+                        ? const StyledText('Loading...')
+                        : const StyledText('Load More'),
+                  ),
+                ),
+              );
+            }
+
             final post = postProvider.posts[index];
             final isOwner = user?.id == post.authorId;
 
@@ -126,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (context, imageIndex) {
                               final image = post.images[imageIndex];
-                
+
                               return Padding(
                                 padding: const EdgeInsets.only(right: 8),
                                 child: ClipRRect(
@@ -154,7 +195,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             IconButton(
                               color: AppColors.titleColor,
                               icon: const Icon(Icons.edit),
-                              onPressed: () => context.push('/edit-post', extra: post),
+                              onPressed: () {
+                                context.push(
+                                  '/edit-post',
+                                  extra: post,
+                                );
+                              },
                             ),
                             IconButton(
                               color: AppColors.titleColor,
@@ -166,7 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
-              )
+              ),
             );
           },
         ),
@@ -174,10 +220,16 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: user == null
           ? null
           : FloatingActionButton.extended(
-          backgroundColor: AppColors.titleColor,
-          onPressed: () {context.push('/create-post');},
-          icon: Icon(Icons.add, color: AppColors.secondaryAccent),
-          label: StyledText('Create Post', color: AppColors.secondaryAccent),
+        backgroundColor: AppColors.titleColor,
+        onPressed: () => context.push('/create-post'),
+        icon: Icon(
+          Icons.add,
+          color: AppColors.secondaryAccent,
+        ),
+        label: StyledText(
+          'Create Post',
+          color: AppColors.secondaryAccent,
+        ),
       ),
     );
   }

@@ -27,14 +27,21 @@ class PostService {
     return response['id'];
   }
 
-  Future<List<Post>> fetchPosts() async {
+  Future<List<Post>> fetchPosts({
+    required int page,
+    required int limit,
+  }) async {
+    final start = page * limit;
+    final end = start + limit - 1;
+
     final response = await supabase
         .from('posts')
         .select('''
           *,
           post_images(*)
         ''')
-        .order('created_at', ascending: false);
+        .order('created_at', ascending: false)
+        .range(start, end);
 
     List<Post> posts = response
         .map((json) => Post.fromMap(json))

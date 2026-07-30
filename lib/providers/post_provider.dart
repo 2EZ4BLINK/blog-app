@@ -10,10 +10,16 @@ import 'package:flutter/material.dart';
 class PostProvider extends ChangeNotifier{
   final PostService _postService = PostService();
 
-  final List<Post> _posts = [];
-  bool _isLoading = false;
+  int _page = 0;
   String? _errorMessage;
 
+  final int _limit = 5;
+  final List<Post> _posts = [];
+
+  bool _hasMore = true;
+  bool _isLoading = false;
+
+  bool get hasMore => _hasMore;
   List<Post> get posts => _posts;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
@@ -32,7 +38,7 @@ class PostProvider extends ChangeNotifier{
         title: title,
         content: content,
       );
-      await fetchPosts();
+      await fetchPosts(refresh: true);
       return postId;
     }
     catch(error){
@@ -45,21 +51,36 @@ class PostProvider extends ChangeNotifier{
     }
   }
 
-  Future<void> fetchPosts() async {
+  Future<void> fetchPosts({
+    bool refresh = false,
+  }) async
+  {
+    if (refresh) {
+      _page = 0;
+      _posts.clear();
+      _hasMore = true;
+    }
+
+    if (!_hasMore) return;
+
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
-    try{
-      final posts = await _postService.fetchPosts();
-      _posts.clear();
+    try {
+      final posts = await _postService.fetchPosts(
+        page: _page,
+        limit: _limit,
+      );
+
       _posts.addAll(posts);
-    }
-    catch(error)
-    {
+      if (posts.length < _limit) {
+        _hasMore = false;
+      }
+      _page++;
+    } catch (error) {
       _errorMessage = error.toString();
-    }
-    finally{
+    } finally {
       _isLoading = false;
       notifyListeners();
     }
@@ -72,7 +93,7 @@ class PostProvider extends ChangeNotifier{
 
     try{
       await _postService.deletePost(postId);
-      await fetchPosts();
+      await fetchPosts(refresh: true);
     }
     catch(error)
     {
@@ -123,7 +144,7 @@ class PostProvider extends ChangeNotifier{
         );
       }
 
-      await fetchPosts();
+      await fetchPosts(refresh: true);
     } catch (error) {
       _errorMessage = error.toString();
     } finally {
@@ -148,13 +169,12 @@ class PostProvider extends ChangeNotifier{
           image: image,
         );
       }
+      await fetchPosts(refresh: true);
     } catch (error) {
       _errorMessage = error.toString();
     } finally {
       _isLoading = false;
       notifyListeners();
     }
-
-    await fetchPosts();
   }
 }
