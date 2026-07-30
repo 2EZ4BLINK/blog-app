@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:blog_forum/models/comment.dart';
+import 'package:blog_forum/models/comment_image.dart';
 import 'package:blog_forum/services/post_service.dart';
 import 'package:flutter/material.dart';
 
@@ -63,6 +64,9 @@ class CommentProvider extends ChangeNotifier {
     required String postId,
     required String commentId,
     required String content,
+    required List<CommentImage> originalImages,
+    required List<CommentImage> existingImages,
+    required List<File> newImages,
   }) async
   {
     _isLoading = true;
@@ -74,6 +78,25 @@ class CommentProvider extends ChangeNotifier {
         commentId: commentId,
         content: content,
       );
+
+      final removedImages = originalImages.where((image) {
+        return !existingImages.any(
+              (existingImage) => existingImage.id == image.id,
+        );
+      }).toList();
+
+      for (final image in removedImages) {
+        await _postService.deleteCommentImage(
+          imageId: image.id,
+        );
+      }
+
+      for (final image in newImages) {
+        await _postService.uploadCommentImage(
+          commentId: commentId,
+          image: image,
+        );
+      }
       await fetchComments(postId);
     } catch (error) {
       _errorMessage = error.toString();

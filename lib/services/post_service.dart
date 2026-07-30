@@ -165,4 +165,13 @@ class PostService {
         .delete()
         .eq('id', commentId);
   }
+
+  Future<void> deleteCommentImage({
+    required String imageId,
+  }) async {
+    await supabase
+        .from('comment_images')
+        .delete()
+        .eq('id', imageId);
+  }
 }

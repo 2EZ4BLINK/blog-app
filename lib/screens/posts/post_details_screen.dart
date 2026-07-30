@@ -26,10 +26,10 @@ class PostDetailsScreen extends StatefulWidget {
 
 class _PostDetailsScreenState extends State<PostDetailsScreen> {
   final TextEditingController _commentController = TextEditingController();
-  final ImagePicker picker = ImagePicker();
   final List<File> _selectedImages = [];
 
   Future<void> _pickImages() async {
+    final ImagePicker picker = ImagePicker();
     final List<XFile> images = await picker.pickMultiImage();
 
     if (images.isEmpty) return;
