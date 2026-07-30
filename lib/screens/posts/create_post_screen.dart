@@ -23,10 +23,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   final TextEditingController _contentController =
   TextEditingController();
 
-  final ImagePicker _picker = ImagePicker();
   List<File> _selectedImages = [];
 
   Future<void> _pickImages() async {
+    final _picker = ImagePicker();
     final List<XFile> images = await _picker.pickMultiImage();
 
     setState(() {
@@ -51,10 +51,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
     if (postId == null) return;
 
-    await postProvider.uploadPostImages(
-      postId: postId,
-      images: _selectedImages,
-    );
+    if(_selectedImages.isNotEmpty)  {
+      await postProvider.uploadPostImages(
+        postId: postId,
+        images: _selectedImages,
+      );
+    }
 
     if (!mounted) return;
 
@@ -79,7 +81,6 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     if (postProvider.errorMessage == null) {
       _titleController.clear();
       _contentController.clear();
-
       context.pop();
     }
   }

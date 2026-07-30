@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:blog_forum/config/supabase_config.dart';
 import 'package:blog_forum/models/comment.dart';
 import 'package:blog_forum/models/post.dart';
+import 'package:blog_forum/models/post_image.dart';
 import 'package:blog_forum/services/post_service.dart';
 import 'package:flutter/material.dart';
 
@@ -87,6 +88,9 @@ class PostProvider extends ChangeNotifier{
     required String postId,
     required String title,
     required String content,
+    required List<PostImage> originalImages,
+    required List<PostImage> existingImages,
+    required List<File> newImages,
   }) async
   {
     _isLoading = true;
@@ -99,6 +103,26 @@ class PostProvider extends ChangeNotifier{
         title: title,
         content: content,
       );
+
+      final removedImages = originalImages.where((image) {
+        return !existingImages.any(
+              (existingImage) => existingImage.id == image.id,
+        );
+      }).toList();
+
+      for (final image in removedImages) {
+        await _postService.deletePostImage(
+          imageId: image.id,
+        );
+      }
+
+      for (final image in newImages) {
+        await _postService.uploadPostImage(
+          postId: postId,
+          image: image,
+        );
+      }
+
       await fetchPosts();
     } catch (error) {
       _errorMessage = error.toString();

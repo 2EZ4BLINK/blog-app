@@ -43,7 +43,7 @@ class PostService {
     return posts;
   }
 
-  Future<void> deletePost(postId) async {
+  Future<void> deletePost(String postId) async {
     await supabase
         .from('posts')
         .delete()
@@ -89,6 +89,15 @@ class PostService {
     });
   }
 
+  Future<void> deletePostImage({
+    required String imageId,
+  }) async
+  {
+    await supabase
+        .from('post_images')
+        .delete()
+        .eq('id', imageId);
+  }
 
   Future<List<Comment>> fetchComments(String postId) async {
     final response = await supabase
@@ -110,7 +119,8 @@ class PostService {
   Future<String> createComment({
     required String postId,
     required String content,
-  }) async {
+  }) async
+  {
     final user = supabase.auth.currentUser!;
 
     final response = await supabase
@@ -129,7 +139,8 @@ class PostService {
   Future<void> uploadCommentImage({
     required String commentId,
     required File image,
-  }) async {
+  }) async
+  {
     final user = supabase.auth.currentUser!;
 
     final String filePath =
@@ -152,7 +163,8 @@ class PostService {
   Future<void> updateComment({
     required String commentId,
     required String content,
-  }) async {
+  }) async
+  {
     await supabase
         .from('comments')
         .update({'content': content})
@@ -168,7 +180,8 @@ class PostService {
 
   Future<void> deleteCommentImage({
     required String imageId,
-  }) async {
+  }) async
+  {
     await supabase
         .from('comment_images')
         .delete()

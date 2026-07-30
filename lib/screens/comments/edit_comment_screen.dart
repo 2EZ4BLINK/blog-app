@@ -84,7 +84,6 @@ class _EditCommentScreenState extends State<EditCommentScreen> {
   @override
   void initState() {
     super.initState();
-
     _commentController.text = widget.comment.content;
     _existingImages = List.from(widget.comment.images);
   }
